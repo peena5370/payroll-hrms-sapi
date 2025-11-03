@@ -1,5 +1,6 @@
 # A Human Resource Payroll Management System
-A FYP project during degress study
+A FYP project during degree study
+- Project designed with multi-layered architecture design which having the system, process and experience layer for the API design.
 
 ## Tools & Frameworks
 ### Programming Languages
@@ -41,8 +42,12 @@ A FYP project during degress study
 | Asyncio | Python asynchorize library for concurrent programming |
 | theine | Python caching library |
 
-3. payroll-stock-management (To be implement)
-4. payroll-order-management (To be implement)
+3. payroll-product-management (To be implement)
+- A project which will manage the product related features such as order management, stock management and customer related system.
+4. payroll-time-management (To be implement)
+- A project which gathered the employee leave application, attendance taking, attendance report generation system
+5. payroll-accounting-management (To be implement)
+- The core project for the payroll HRMS system which gathered the payroll accounting, tax management, salary management and more. 
 
 ### Front-end
 | Tools | Description |
