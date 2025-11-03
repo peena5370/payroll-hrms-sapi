@@ -1,6 +1,6 @@
 package com.company.payroll.department.service;
 
-import com.company.payroll.department.dto.DepartmentDetailDTO;
+import com.company.payroll.department.dto.DepartmentFacilityDetailDTO;
 import com.company.payroll.department.dto.DepartmentFacilityDTO;
 
 import java.util.List;
@@ -10,5 +10,5 @@ public interface DepartmentFacilityService {
 
     boolean deleteDepartmentFacilityUnitDetailByDepartmentFUId(long departmentFUId);
 
-    List<DepartmentDetailDTO> getAllDepartmentDetailsByFacilityId(long facilityId);
+    List<DepartmentFacilityDetailDTO> getAllDepartmentDetailsByFacilityId(long facilityId);
 }

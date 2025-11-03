@@ -43,7 +43,7 @@ public class DepartmentCommonServiceImpl implements DepartmentCommonService {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
         log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
 
-        List<DepartmentEmployee> result = departmentEmployeeRepository.getAllByDepartmentEmployeeId(employeeId);
+        List<DepartmentEmployee> result = departmentEmployeeRepository.getAllByDepartmentByEmployeeId(employeeId);
 
         boolean isExist = (result != null && !result.isEmpty());
 
