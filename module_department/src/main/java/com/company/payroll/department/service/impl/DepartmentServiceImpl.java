@@ -40,7 +40,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public List<DepartmentInfoDTO> getAllDepartmentInfoByOffsetLimit(int offset, int limit) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} start.", CLASS_NAME, functionName);
 
         List<DepartmentInfoDTO> departmentInfoDTOList = new ArrayList<>();
 
@@ -70,7 +70,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             }
         }
 
-        log.info("{} {} end. Size={}", new Object[]{CLASS_NAME, functionName, departmentInfoDTOList.size()});
+        log.info("{} {} end. Size={}", CLASS_NAME, functionName, departmentInfoDTOList.size());
         return departmentInfoDTOList;
     }
 
@@ -78,9 +78,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Optional<DepartmentInfoDTO> getDepartmentInfoByDepartmentId(long departmentId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
 
-        Object[] params = new Object[]{CLASS_NAME, functionName, departmentId};
-
-        log.info("{} {} start. departmentId={}", params);
+        log.info("{} {} start. departmentId={}", CLASS_NAME, functionName, departmentId);
 
         Optional<Department> department = departmentRepository.findById(departmentId);
 
@@ -102,18 +100,18 @@ public class DepartmentServiceImpl implements DepartmentService {
                     detail
             );
 
-            log.info("{} {} success for departmentId={}.", params);
+            log.info("{} {} success for departmentId={}.", CLASS_NAME, functionName, departmentId);
             return Optional.of(departmentInfoDTO);
         }
 
-        log.info("{} {} fail. Department info with departmentId={} not exist.", params);
+        log.info("{} {} fail. Department info with departmentId={} not exist.", CLASS_NAME, functionName, departmentId);
         return Optional.empty();
     }
 
     @Override
     public int createDepartmentInfo(DepartmentDTO departmentDTO) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} start.", CLASS_NAME, functionName);
 
         int status = 0;
         try {
@@ -136,22 +134,22 @@ public class DepartmentServiceImpl implements DepartmentService {
 
                 departmentRepository.saveAndFlush(department);
 
-                log.info("{} {} create success.", new Object[]{CLASS_NAME, functionName});
+                log.info("{} {} create success.", CLASS_NAME, functionName);
                 status = 1;
             }
         } catch (Exception e) {
-            log.error("{} {} encountered exception. Message: {}", new Object[]{CLASS_NAME, functionName, e.getMessage()});
+            log.error("{} {} encountered exception. Message: {}", CLASS_NAME, functionName, e.getMessage());
             status = -1;
         }
 
-        log.info("{} {} end. Status={}", new Object[]{CLASS_NAME, functionName, status});
+        log.info("{} {} end. Status={}", CLASS_NAME, functionName, status);
         return status;
     }
 
     @Override
     public int updateDepartmentInfoById(long departmentId, DepartmentDTO departmentDTO) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentId={}", new Object[]{CLASS_NAME, functionName, departmentId});
+        log.info("{} {} start. departmentId={}", CLASS_NAME, functionName, departmentId);
 
         int status = 0;
 
@@ -159,7 +157,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             Optional<Department> department = departmentRepository.findById(departmentId);
 
             if (department.isEmpty()) {
-                log.info("{} {} not found for departmentId={}", new Object[]{CLASS_NAME, functionName, departmentId});
+                log.info("{} {} not found for departmentId={}", CLASS_NAME, functionName, departmentId);
                 status = -2;
             } else {
                 // check for duplicate department cost center value which clash with other data
@@ -180,23 +178,23 @@ public class DepartmentServiceImpl implements DepartmentService {
 
                     departmentRepository.saveAndFlush(updateDepartment);
 
-                    log.info("{} {} update success for departmentId={}", new Object[]{CLASS_NAME, functionName, departmentId});
+                    log.info("{} {} update success for departmentId={}", CLASS_NAME, functionName, departmentId);
                     status = 1;
                 }
             }
         } catch (Exception e) {
-            log.error("{} {} encountered exception. Message: {}", new Object[]{CLASS_NAME, functionName, e.getMessage()});
+            log.error("{} {} encountered exception. Message: {}", CLASS_NAME, functionName, e.getMessage());
             status = -1;
         }
 
-        log.info("{} {} end. departmentId={}, status={}", new Object[]{CLASS_NAME, functionName, departmentId, status});
+        log.info("{} {} end. departmentId={}, status={}", CLASS_NAME, functionName, departmentId, status);
         return status;
     }
 
     @Override
     public int deleteDepartmentInfoById(long departmentId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentId={}", new Object[]{CLASS_NAME, functionName, departmentId});
+        log.info("{} {} start. departmentId={}", CLASS_NAME, functionName, departmentId);
 
         int status = 0;
 
@@ -206,20 +204,20 @@ public class DepartmentServiceImpl implements DepartmentService {
             List<DepartmentFacilityUnit> departmentFacilityUnits = departmentFacilityUnitRepository.getAllByDepartmentId(departmentId);
 
             if(!departmentEmployees.isEmpty() || !departmentFacilityUnits.isEmpty()) {
-                log.info("{} {} for departmentId={} is in used, not allow to delete.", new Object[]{CLASS_NAME, functionName, departmentId});
+                log.info("{} {} for departmentId={} is in used, not allow to delete.", CLASS_NAME, functionName, departmentId);
                 status = -2;
             } else {
                 departmentRepository.delete(department.get());
 
-                log.info("{} {} delete success for departmentId={}", new Object[]{CLASS_NAME, functionName, departmentId});
+                log.info("{} {} delete success for departmentId={}", CLASS_NAME, functionName, departmentId);
                 status = 1;
             }
         } else {
-            log.info("{} {} for departmentId={} not found.", new Object[]{CLASS_NAME, functionName, departmentId});
+            log.info("{} {} for departmentId={} not found.", CLASS_NAME, functionName, departmentId);
             status = -1;
         }
 
-        log.info("{} {} end. departmentId={}, Status={}", new Object[]{CLASS_NAME, functionName, departmentId, status});
+        log.info("{} {} end. departmentId={}, Status={}", CLASS_NAME, functionName, departmentId, status);
         return status;
     }
 }

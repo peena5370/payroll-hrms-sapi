@@ -15,19 +15,19 @@ public class EmployeeInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info("{} {} executed.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} executed.", CLASS_NAME, functionName);
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info("{} {} executed.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} executed.", CLASS_NAME, functionName);
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info("{} {} executed.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} executed.", CLASS_NAME, functionName);
     }
 }

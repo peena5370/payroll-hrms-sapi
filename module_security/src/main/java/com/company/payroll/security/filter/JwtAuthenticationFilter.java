@@ -78,7 +78,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             } catch (Exception e) {
                 // Log and handle invalid or expired tokens
-                log.error("{} JWT authentication failed={}", new Object[]{CLASS_NAME, e.getMessage()});
+                log.error("{} JWT authentication failed={}", CLASS_NAME, e.getMessage());
             }
         }
 

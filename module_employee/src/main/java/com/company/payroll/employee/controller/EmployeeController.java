@@ -31,7 +31,7 @@ public class EmployeeController {
     @PostMapping
     public ResponseEntity<CommonResponse> createEmployeeDetail(@RequestBody EmployeeDTO employeeDTO) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} start.", CLASS_NAME, functionName);
 
         int result = employeeService.createEmployeeInfo(employeeDTO);
 
@@ -45,7 +45,7 @@ public class EmployeeController {
         CommonResponse response = responses.getOrDefault(result, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
                 CommonResponse.COMMON_ERROR_MESSAGE, null));
 
-        log.info("{} {} end. Response={}", new Object[]{CLASS_NAME, functionName, response.statusCode()});
+        log.info("{} {} end. Response={}", CLASS_NAME, functionName, response.statusCode());
         return ResponseEntity.status(response.statusCode()).body(response);
     }
 
@@ -54,7 +54,7 @@ public class EmployeeController {
             @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
             @RequestParam(value = "limit", required = false, defaultValue = "5") Integer limit) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. Request param: offset={}, limit={}", new Object[]{CLASS_NAME, functionName, offset, limit});
+        log.info("{} {} start. Request param: offset={}, limit={}", CLASS_NAME, functionName, offset, limit);
 
         List<EmployeeInfoDTO> employeeList = employeeService.getAllEmployeesByOffsetAndLimit(offset, limit);
 
@@ -62,14 +62,14 @@ public class EmployeeController {
                 new CommonResponse(BAD_REQUEST.value(), "Error when retrieving the employee info.", null) :
                 new CommonResponse(OK.value(), "Success retrieve employee info", employeeList);
 
-        log.info("{} {} end. Response={}", new Object[]{CLASS_NAME, functionName, response.statusCode()});
+        log.info("{} {} end. Response={}", CLASS_NAME, functionName, response.statusCode());
         return ResponseEntity.status(response.statusCode()).body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CommonResponse> getEmployeeDetailByEmployeeId(@PathVariable("id") Long employeeId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentId={}.", new Object[]{CLASS_NAME, functionName, employeeId});
+        log.info("{} {} start. departmentId={}.", CLASS_NAME, functionName, employeeId);
 
         Optional<EmployeeInfoDTO> employeeInfo = employeeService.getEmployeeInfoById(employeeId);
 
@@ -77,14 +77,14 @@ public class EmployeeController {
                         new CommonResponse(OK.value(), "Employee info retrieve success.", employeeInfoDTO))
                 .orElseGet(() -> new CommonResponse(NOT_FOUND.value(), "Employee info not found.", null));
 
-        log.info("{} {} end. Status={}", new Object[]{CLASS_NAME, functionName, response.statusCode()});
+        log.info("{} {} end. Status={}", CLASS_NAME, functionName, response.statusCode());
         return ResponseEntity.status(response.statusCode()).body(response);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponse> updateEmployeeDetailByEmployeeId(@PathVariable("id") Long employeeId, @RequestBody EmployeeDTO employeeDTO) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. employeeId={}", new Object[]{CLASS_NAME, functionName, employeeId});
+        log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
         int updatedResult = employeeService.updateEmployeeInfoById(employeeId, employeeDTO);
 
         Map<Integer, CommonResponse> responses = Map.ofEntries(
@@ -98,14 +98,14 @@ public class EmployeeController {
         CommonResponse response = responses.getOrDefault(updatedResult, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
                 CommonResponse.COMMON_ERROR_MESSAGE, null));
 
-        log.info("{} {} end. employeeId={}, Status={}", new Object[]{CLASS_NAME, functionName, employeeId, response.statusCode()});
+        log.info("{} {} end. employeeId={}, Status={}", CLASS_NAME, functionName, employeeId, response.statusCode());
         return ResponseEntity.status(response.statusCode()).body(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponse> deleteEmployeeDetailById(@PathVariable("id") Long employeeId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. employeeId={}", new Object[]{CLASS_NAME, functionName, employeeId});
+        log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
 
         int deletedResult = employeeService.deleteEmployeeInfoById(employeeId);
 
@@ -119,7 +119,7 @@ public class EmployeeController {
         CommonResponse response = responses.getOrDefault(deletedResult, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
                 CommonResponse.COMMON_ERROR_MESSAGE, null));
 
-        log.info("{} {} end. employeeId={}, Status={}", new Object[]{CLASS_NAME, functionName, employeeId, response.statusCode()});
+        log.info("{} {} end. employeeId={}, Status={}", CLASS_NAME, functionName, employeeId, response.statusCode());
         return ResponseEntity.status(response.statusCode()).body(response);
     }
 }

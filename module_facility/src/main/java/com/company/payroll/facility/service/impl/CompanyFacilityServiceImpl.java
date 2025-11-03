@@ -37,7 +37,7 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
     @Override
     public int createCompanyFacilityDetail(CompanyFacilityDTO companyFacilityDTO) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} start.", CLASS_NAME, functionName);
 
         int status = 0;
 
@@ -62,22 +62,22 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
 
                 companyFacilityRepository.saveAndFlush(companyFacility);
 
-                log.info("{} {} create success.", new Object[]{CLASS_NAME, functionName});
+                log.info("{} {} create success.", CLASS_NAME, functionName);
                 status = 1;
             }
         } catch (Exception e) {
-            log.error("{} {} encountered exception. Message: {}", new Object[]{CLASS_NAME, functionName, e.getMessage()});
+            log.error("{} {} encountered exception. Message: {}", CLASS_NAME, functionName, e.getMessage());
             status = -1;
         }
 
-        log.info("{} {} end. Status={}", new Object[]{CLASS_NAME, functionName, status});
+        log.info("{} {} end. Status={}", CLASS_NAME, functionName, status);
         return status;
     }
 
     @Override
     public List<CompanyFacilityDetailDTO> getAllCompanyFacilityDetailByOffsetAndLimit(int offset, int limit) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} start.", CLASS_NAME, functionName);
 
         List<CompanyFacilityDetailDTO> facilityDetailDTOList = new ArrayList<>();
 
@@ -109,17 +109,14 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
             }
         }
 
-        log.info("{} {} end. Size={}", new Object[]{CLASS_NAME, functionName, facilityDetailDTOList.size()});
+        log.info("{} {} end. Size={}", CLASS_NAME, functionName, facilityDetailDTOList.size());
         return facilityDetailDTOList;
     }
 
     @Override
     public Optional<CompanyFacilityDetailDTO> getCompanyFacilityDetailById(long facilityId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
-        Object[] params = new Object[]{CLASS_NAME, functionName, facilityId};
-
-        log.info("{} {} start. facilityId={}", params);
+        log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         Optional<CompanyFacility> facility = companyFacilityRepository.findById(facilityId);
 
@@ -143,18 +140,18 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
                     facilityDetail
             );
 
-            log.info("{} {} success for facilityId={}.", params);
+            log.info("{} {} success for facilityId={}.", CLASS_NAME, functionName, facilityId);
             return Optional.of(facilityDetailDTO);
         }
 
-        log.info("{} {} fail. Company facility info with facilityId={} not exist.", params);
+        log.info("{} {} fail. Company facility info with facilityId={} not exist.", CLASS_NAME, functionName, facilityId);
         return Optional.empty();
     }
 
     @Override
     public int updateCompanyFacilityDetailById(long facilityId, CompanyFacilityDTO companyFacilityDTO) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. facilityId={}", new Object[]{CLASS_NAME, functionName, facilityId});
+        log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         int status = 0;
 
@@ -162,7 +159,7 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
             Optional<CompanyFacility> companyFacility = companyFacilityRepository.findById(facilityId);
 
             if (companyFacility.isEmpty()) {
-                log.info("{} {} not found for facilityId={}", new Object[]{CLASS_NAME, functionName, facilityId});
+                log.info("{} {} not found for facilityId={}", CLASS_NAME, functionName, facilityId);
                 status = -2;
             } else {
                 // check for duplicate facility name value which clash with other data
@@ -185,23 +182,23 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
 
                     companyFacilityRepository.saveAndFlush(updateFacility);
 
-                    log.info("{} {} update success for facilityId={}", new Object[]{CLASS_NAME, functionName, facilityId});
+                    log.info("{} {} update success for facilityId={}", CLASS_NAME, functionName, facilityId);
                     status = 1;
                 }
             }
         } catch (Exception e) {
-            log.error("{} {} encountered exception. Message: {}", new Object[]{CLASS_NAME, functionName, e.getMessage()});
+            log.error("{} {} encountered exception. Message: {}", CLASS_NAME, functionName, e.getMessage());
             status = -1;
         }
 
-        log.info("{} {} end. facilityId={}, status={}", new Object[]{CLASS_NAME, functionName, facilityId, status});
+        log.info("{} {} end. facilityId={}, status={}", CLASS_NAME, functionName, facilityId, status);
         return status;
     }
 
     @Override
     public int deleteCompanyFacilityDetailById(long facilityId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. facilityId={}", new Object[]{CLASS_NAME, functionName, facilityId});
+        log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         int status = 0;
 
@@ -210,20 +207,20 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
             boolean isInUsed = departmentCommonService.isFacilityUnitInUsed(facilityId);
 
             if(isInUsed) {
-                log.info("{} {} for facilityId={} is in used, not allow to delete.", new Object[]{CLASS_NAME, functionName, facilityId});
+                log.info("{} {} for facilityId={} is in used, not allow to delete.", CLASS_NAME, functionName, facilityId);
                 status = -2;
             } else {
                 companyFacilityRepository.delete(facility.get());
 
-                log.info("{} {} delete success for facilityId={}", new Object[]{CLASS_NAME, functionName, facilityId});
+                log.info("{} {} delete success for facilityId={}", CLASS_NAME, functionName, facilityId);
                 status = 1;
             }
         } else {
-            log.info("{} {} for facilityId={} not found.", new Object[]{CLASS_NAME, functionName, facilityId});
+            log.info("{} {} for facilityId={} not found.", CLASS_NAME, functionName, facilityId);
             status = -1;
         }
 
-        log.info("{} {} end. facilityId={}, Status={}", new Object[]{CLASS_NAME, functionName, facilityId, status});
+        log.info("{} {} end. facilityId={}, Status={}", CLASS_NAME, functionName, facilityId, status);
         return status;
     }
 }

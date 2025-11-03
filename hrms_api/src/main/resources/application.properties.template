@@ -44,6 +44,8 @@ jwt.config.key=ABCDEF
 # time to live in second
 jwt.config.ttl=604800
 
+security.account.encryption-key=base64string
+
 # File storage path
 file.upload.directory=/home/leeshengxian/test/spring-boot-payroll/files
 

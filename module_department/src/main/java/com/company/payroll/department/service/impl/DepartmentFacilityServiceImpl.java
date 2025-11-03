@@ -43,7 +43,7 @@ public class DepartmentFacilityServiceImpl implements DepartmentFacilityService 
     @Override
     public int createDepartmentFacilityUnit(DepartmentFacilityDTO departmentFacilityDTO) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} start.", CLASS_NAME, functionName);
 
         int status = 0;
 
@@ -60,41 +60,41 @@ public class DepartmentFacilityServiceImpl implements DepartmentFacilityService 
 
             status = 1;
         } else if(department.isEmpty()) {
-            log.info("{} {} department info with departmentId={} not exist.", new Object[]{CLASS_NAME, functionName, departmentFacilityDTO.departmentId()});
+            log.info("{} {} department info with departmentId={} not exist.", CLASS_NAME, functionName, departmentFacilityDTO.departmentId());
             status = -1;
         } else {
-            log.info("{} {} company facility with facilityId={} not exist.", new Object[]{CLASS_NAME, functionName, departmentFacilityDTO.facilityId()});
+            log.info("{} {} company facility with facilityId={} not exist.", CLASS_NAME, functionName, departmentFacilityDTO.facilityId());
             status = -2;
         }
 
-        log.info("{} {} end. Result={}", new Object[]{CLASS_NAME, functionName, status});
+        log.info("{} {} end. Result={}", CLASS_NAME, functionName, status);
         return status;
     }
 
     @Override
     public boolean deleteDepartmentFacilityUnitDetailByDepartmentFUId(long departmentFUId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentFUId={}", new Object[]{CLASS_NAME, functionName, departmentFUId});
+        log.info("{} {} start. departmentFUId={}", CLASS_NAME, functionName, departmentFUId);
 
         boolean status = false;
 
         Optional<DepartmentFacilityUnit> departmentFacilityUnit = departmentFacilityUnitRepository.findById(departmentFUId);
 
         if(departmentFacilityUnit.isEmpty()) {
-            log.info("{} {} for departmentFUId={} not exist.", new Object[]{CLASS_NAME, functionName, departmentFUId});
+            log.info("{} {} for departmentFUId={} not exist.", CLASS_NAME, functionName, departmentFUId);
         } else {
             departmentFacilityUnitRepository.delete(departmentFacilityUnit.get());
             status = true;
         }
 
-        log.info("{} {} end. Result={}", new Object[]{CLASS_NAME, functionName, status});
+        log.info("{} {} end. Result={}", CLASS_NAME, functionName, status);
         return status;
     }
 
     @Override
     public List<DepartmentDetailDTO> getAllDepartmentDetailsByFacilityId(long facilityId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. facilityId={}", new Object[]{CLASS_NAME, functionName, facilityId});
+        log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         List<DepartmentDetailDTO> result = new ArrayList<>();
 
@@ -160,10 +160,10 @@ public class DepartmentFacilityServiceImpl implements DepartmentFacilityService 
                 }
             }
         } else {
-            log.info("{} {} company facility with facilityId={} not exist.", new Object[]{CLASS_NAME, functionName, facilityId});
+            log.info("{} {} company facility with facilityId={} not exist.", CLASS_NAME, functionName, facilityId);
         }
 
-        log.info("{} {} end. facilityId={}, size={}", new Object[]{CLASS_NAME, functionName, facilityId, result.size()});
+        log.info("{} {} end. facilityId={}, size={}", CLASS_NAME, functionName, facilityId, result.size());
         return result;
     }
 }

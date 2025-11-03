@@ -16,17 +16,14 @@ import org.springframework.core.env.Environment;
 @PropertySource(value = "classpath:util/config-${spring.profiles.active}.properties", ignoreResourceNotFound = true)
 public class SnowFlakeIdGeneratorWorkerConfig {
     private final SnowFlakeUtilProperties properties;
-    private final Environment environment;
 
-    public SnowFlakeIdGeneratorWorkerConfig(SnowFlakeUtilProperties properties, Environment environment) {
+    public SnowFlakeIdGeneratorWorkerConfig(SnowFlakeUtilProperties properties) {
         this.properties = properties;
-        this.environment = environment;
     }
 
 	@Bean
 	public SnowFlakeIdGenerator createSnowFlakeIdGenerator() {
-        log.info("value: " + properties.getWorkerId() + "\tdatacenterId: " + properties.getDatacenterId());
-
+        log.info("workerId={} datacenterId{}", properties.getWorkerId(), properties.getDatacenterId());
         return new SnowFlakeIdGenerator(properties.getWorkerId(), properties.getDatacenterId());
 	}
 }

@@ -1,5 +1,6 @@
 package com.company.payroll.employee.model;
 
+import com.company.payroll.employee.util.AccountNumberConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class EmployeeBankDetail {
     @Column(name = "bank_name", nullable = false)
     private String bankName;
 
+    @Convert(converter = AccountNumberConverter.class)
     @Column(name = "account_number", nullable = false)
     private String encryptedAccountNumber;
 
