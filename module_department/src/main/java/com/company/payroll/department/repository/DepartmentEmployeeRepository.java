@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DepartmentEmployeeRepository extends JpaRepository<DepartmentEmployee, Long> {
 
@@ -17,11 +18,16 @@ public interface DepartmentEmployeeRepository extends JpaRepository<DepartmentEm
             "AND de.departmentFUId IN :departmentFUIds " +
             "AND de.isPrimary = :isPrimary " +
             "AND de.isManager = :isManager")
-    List<DepartmentEmployee> getAllByDepartmentIdsAndDepartmentFacilityUnitIdsAndIsPrimaryAndIsManager(@Param("departmentIds") List<Long> departmentIds,
+    List<DepartmentEmployee> getAllByDepartmentIdsByDepartmentFacilityUnitIdsAndIsPrimaryAndIsManager(@Param("departmentIds") List<Long> departmentIds,
                                                                          @Param("departmentFUIds") List<Long> departmentFUIds,
                                                                          @Param("isPrimary") boolean isPrimary,
                                                                          @Param("isManager") boolean isManager);
 
     @Query("SELECT de FROM DepartmentEmployee de WHERE de.employeeId = :employeeId")
-    List<DepartmentEmployee> getAllByDepartmentEmployeeId(@Param("employeeId") Long employeeId);
+    List<DepartmentEmployee> getAllByDepartmentByEmployeeId(@Param("employeeId") Long employeeId);
+
+    @Query("SELECT de.departmentEid FROM DepartmentEmployee de WHERE de.departmentId = :departmentId AND de.departmentFUId = :departmentFUId AND de.employeeId = :employeeId")
+    Optional<Long> getDepartmentEidByDepartmentIdAndDeparmentFacilityUnitIdAndEmployeeId(@Param("departmentId") Long departmentId,
+                                                                                         @Param("departmentFUId") Long departmentFUId,
+                                                                                         @Param("employeeId") Long employeeId);
 }
