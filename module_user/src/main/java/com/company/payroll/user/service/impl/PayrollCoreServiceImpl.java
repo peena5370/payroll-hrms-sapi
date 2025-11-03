@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Slf4j
 @Service
 public class PayrollCoreServiceImpl implements PayrollCoreService {
+    private static final String CLASS_NAME = "[PayrollCoreServiceImpl]";
     private final WebClient client;
     private static final String JWK_URI_URL = "/core/json/jwk_uri";
 
@@ -20,6 +21,8 @@ public class PayrollCoreServiceImpl implements PayrollCoreService {
     }
 
     public JwkUriResponse getJwkUri() {
+        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        log.info("{} {} started.", CLASS_NAME, functionName);
         JwkUriResponse response = null;
         try {
             response = client.post()
@@ -35,13 +38,14 @@ public class PayrollCoreServiceImpl implements PayrollCoreService {
                 throw new IllegalStateException("Received null response from JWK URI endpoint.");
             }
 
-            log.info("PayrollCoreService Successfully fetched JWK URI.");
+            log.info("{} {} successfully fetched JWK URI.", CLASS_NAME, functionName);
         } catch (WebClientResponseException e) {
-            log.error("PayrollCoreService Error fetching JWK URI. Status: " + e.getStatusCode() + ", Body: " + e.getResponseBodyAsString());
+            log.error("{} {} Error fetching JWK URI. Status={}, Body={}", CLASS_NAME, functionName, e.getStatusCode(), e.getResponseBodyAsString());
         } catch (Exception e) {
-            log.error("PayrollCoreService An unexpected error occurred: " + e.getMessage());
+            log.error("{} {} An unexpected error occurred={}", CLASS_NAME, functionName, e.getMessage());
         }
 
+        log.info("{} {} end.", CLASS_NAME, functionName);
         return response;
     }
 }

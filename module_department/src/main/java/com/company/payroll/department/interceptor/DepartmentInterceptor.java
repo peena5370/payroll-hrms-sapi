@@ -15,11 +15,11 @@ public class DepartmentInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info("{} {} executed.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} executed.", CLASS_NAME, functionName);
         // check rights here, return true if allow access the api, return false if the user not allow to access the api
         String authorizationHeader = request.getHeader("Authorization");
 
-        log.info("{} {}  token header: {}", new Object[]{CLASS_NAME, functionName, authorizationHeader});
+        log.info("{} {}  token header: {}", CLASS_NAME, functionName, authorizationHeader);
 
 //        if(authorizationHeader != null) {
 //            String token = authorizationHeader.substring(7);
@@ -39,12 +39,12 @@ public class DepartmentInterceptor implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info("{} {} executed.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} executed.", CLASS_NAME, functionName);
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info("{} {} executed.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} executed.", CLASS_NAME, functionName);
     }
 }

@@ -28,26 +28,26 @@ public class DepartmentCommonServiceImpl implements DepartmentCommonService {
     @Override
     public boolean isFacilityUnitInUsed(long facilityId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. facilityId={}", new Object[]{CLASS_NAME, functionName, facilityId});
+        log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         List<DepartmentFacilityUnit> result = departmentFacilityUnitRepository.getAllByFacilityId(facilityId);
 
         boolean isInUsed = (result != null && !result.isEmpty());
 
-        log.info("{} {} end. facilityId={}, result={}", new Object[]{CLASS_NAME, functionName, facilityId, isInUsed});
+        log.info("{} {} end. facilityId={}, result={}", CLASS_NAME, functionName, facilityId, isInUsed);
         return isInUsed;
     }
 
     @Override
     public boolean isDepartmentEmployeeExist(long employeeId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. employeeId={}", new Object[]{CLASS_NAME, functionName, employeeId});
+        log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
 
         List<DepartmentEmployee> result = departmentEmployeeRepository.getAllByDepartmentEmployeeId(employeeId);
 
         boolean isExist = (result != null && !result.isEmpty());
 
-        log.info("{} {} end. employeeId={}, result={}", new Object[]{CLASS_NAME, functionName, employeeId, isExist});
+        log.info("{} {} end. employeeId={}, result={}", CLASS_NAME, functionName, employeeId, isExist);
         return isExist;
     }
 }

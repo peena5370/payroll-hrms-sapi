@@ -29,7 +29,7 @@ public class FacilityController {
     @PostMapping
     public ResponseEntity<CommonResponse> createCompanyFacility(@RequestBody CompanyFacilityDTO companyFacilityDTO) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} start.", CLASS_NAME, functionName);
 
         int result = companyFacilityService.createCompanyFacilityDetail(companyFacilityDTO);
 
@@ -43,7 +43,7 @@ public class FacilityController {
         CommonResponse response = responses.getOrDefault(result, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
                 CommonResponse.COMMON_ERROR_MESSAGE, null));
 
-        log.info("{} {} end. Response={}", new Object[]{CLASS_NAME, functionName, response.statusCode()});
+        log.info("{} {} end. Response={}", CLASS_NAME, functionName, response.statusCode());
         return ResponseEntity.status(response.statusCode()).body(response);
     }
 
@@ -52,7 +52,7 @@ public class FacilityController {
             @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
             @RequestParam(value = "limit", required = false, defaultValue = "5") Integer limit) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. Request param: offset={}, limit={}", new Object[]{CLASS_NAME, functionName, offset, limit});
+        log.info("{} {} start. Request param: offset={}, limit={}", CLASS_NAME, functionName, offset, limit);
 
         List<CompanyFacilityDetailDTO> facilityList = companyFacilityService.getAllCompanyFacilityDetailByOffsetAndLimit(offset, limit);
 
@@ -60,14 +60,14 @@ public class FacilityController {
                 new CommonResponse(BAD_REQUEST.value(), "Error when retrieving the company facility info.", null) :
                 new CommonResponse(OK.value(), "Success retrieve company facility info", facilityList);
 
-        log.info("{} {} end. Response={}", new Object[]{CLASS_NAME, functionName, response.statusCode()});
+        log.info("{} {} end. Response={}", CLASS_NAME, functionName, response.statusCode());
         return ResponseEntity.status(response.statusCode()).body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CommonResponse> getCompanyFacilityDetailById(@PathVariable("id") Long facilityId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. facilityId={}.", new Object[]{CLASS_NAME, functionName, facilityId});
+        log.info("{} {} start. facilityId={}.", CLASS_NAME, functionName, facilityId);
 
         Optional<CompanyFacilityDetailDTO> facilityInfo = companyFacilityService.getCompanyFacilityDetailById(facilityId);
 
@@ -75,14 +75,14 @@ public class FacilityController {
                         new CommonResponse(OK.value(), "Company facility info retrieve success.", facilityInfoDTO))
                 .orElseGet(() -> new CommonResponse(NOT_FOUND.value(), "Company facility info not found.", null));
 
-        log.info("{} {} end. Status={}", new Object[]{CLASS_NAME, functionName, response.statusCode()});
+        log.info("{} {} end. Status={}", CLASS_NAME, functionName, response.statusCode());
         return ResponseEntity.status(response.statusCode()).body(response);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponse> updateCompanyFacilityDetailById(@PathVariable("id") Long facilityId, @RequestBody CompanyFacilityDTO companyFacilityDTO) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. facilityId={}", new Object[]{CLASS_NAME, functionName, facilityId});
+        log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
         int updatedResult = companyFacilityService.updateCompanyFacilityDetailById(facilityId, companyFacilityDTO);
 
         Map<Integer, CommonResponse> responses = Map.ofEntries(
@@ -96,14 +96,14 @@ public class FacilityController {
         CommonResponse response = responses.getOrDefault(updatedResult, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
                 CommonResponse.COMMON_ERROR_MESSAGE, null));
 
-        log.info("{} {} end. facilityId={}, Status={}", new Object[]{CLASS_NAME, functionName, facilityId, response.statusCode()});
+        log.info("{} {} end. facilityId={}, Status={}", CLASS_NAME, functionName, facilityId, response.statusCode());
         return ResponseEntity.status(response.statusCode()).body(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponse> deleteCompanyFacilityDetailById(@PathVariable("id") Long facilityId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. facilityId={}", new Object[]{CLASS_NAME, functionName, facilityId});
+        log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         int deletedResult = companyFacilityService.deleteCompanyFacilityDetailById(facilityId);
 
@@ -117,7 +117,7 @@ public class FacilityController {
         CommonResponse response = responses.getOrDefault(deletedResult, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
                 CommonResponse.COMMON_ERROR_MESSAGE, null));
 
-        log.info("{} {} end. facilityId={}, Status={}", new Object[]{CLASS_NAME, functionName, facilityId, response.statusCode()});
+        log.info("{} {} end. facilityId={}, Status={}", CLASS_NAME, functionName, facilityId, response.statusCode());
         return ResponseEntity.status(response.statusCode()).body(response);
     }
 }

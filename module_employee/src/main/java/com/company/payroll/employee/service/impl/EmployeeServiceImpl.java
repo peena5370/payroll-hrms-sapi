@@ -54,14 +54,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public int createEmployeeInfo(EmployeeDTO employeeDTO) {
         final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info("{} {} start.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} start.", CLASS_NAME, functionName);
 
         Integer status = transactionTemplate.execute(transactionStatus -> {
             try {
                 Optional<Long> existingEmployeeId = employeeRepository.findIdByIcNumber(employeeDTO.icNumber());
 
                 if (existingEmployeeId.isPresent()) {
-                    log.info("{} {} employee info exist.", new Object[]{CLASS_NAME, functionName});
+                    log.info("{} {} employee info exist.", CLASS_NAME, functionName);
                     transactionStatus.setRollbackOnly();
                     return -2;
                 }
@@ -98,7 +98,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                                     snowFlakeIdGenerator.nextId(),
                                     employeeId,
                                     employeeBankDetailDTO.bankName(),
-                                    employeeBankDetailDTO.accountNumber(), // TODO: update for encrypting the account number
+                                    employeeBankDetailDTO.accountNumber(),
                                     employeeBankDetailDTO.bicCode(),
                                     employeeBankDetailDTO.accountType()
                             )).toList();
@@ -122,7 +122,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
                 return 1;
             } catch (Exception e) {
-                log.error("{} {} exception occurred for transaction. Message={}", new Object[]{CLASS_NAME, functionName, e.getMessage()});
+                log.error("{} {} exception occurred for transaction. Message={}", CLASS_NAME, functionName, e.getMessage());
 
                 transactionStatus.setRollbackOnly();
                 return -1;
@@ -131,14 +131,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         int finalStatus = Optional.ofNullable(status).orElse(0);
 
-        log.info("{} {} end. Status={}", new Object[]{CLASS_NAME, functionName, finalStatus});
+        log.info("{} {} end. Status={}", CLASS_NAME, functionName, finalStatus);
         return finalStatus;
     }
 
     @Override
     public List<EmployeeInfoDTO> getAllEmployeesByOffsetAndLimit(int offset, int limit) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", new Object[]{CLASS_NAME, functionName});
+        log.info("{} {} start.", CLASS_NAME, functionName);
 
         List<EmployeeInfoDTO> result = new ArrayList<>();
 
@@ -157,7 +157,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     employeeBankDetailDTOS = bankDetails.stream()
                             .map(employeeBankDetail -> new EmployeeBankDetailDTO(
                                     employeeBankDetail.getBankName(),
-                                    employeeBankDetail.getEncryptedAccountNumber(), // TODO: update for decrypting the account number
+                                    employeeBankDetail.getEncryptedAccountNumber(),
                                     employeeBankDetail.getBicCode(),
                                     employeeBankDetail.getAccountType()
                             )).toList();
@@ -207,7 +207,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
 
-        log.info("{} {} end. Result size={}", new Object[]{CLASS_NAME, functionName, result.size()});
+        log.info("{} {} end. Result size={}", CLASS_NAME, functionName, result.size());
         return result;
     }
 
@@ -215,8 +215,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Optional<EmployeeInfoDTO> getEmployeeInfoById(long employeeId) {
         final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
 
-        Object[] params = new Object[]{CLASS_NAME, functionName, employeeId};
-        log.info("{} {} start. employeeId={}", params);
+        log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
 
         Optional<Employee> employee = this.employeeRepository.findById(employeeId);
 
@@ -230,7 +229,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employeeBankDetailDTOS = bankDetails.stream()
                         .map(employeeBankDetail -> new EmployeeBankDetailDTO(
                                 employeeBankDetail.getBankName(),
-                                employeeBankDetail.getEncryptedAccountNumber(), // TODO: update for decrypting the account number
+                                employeeBankDetail.getEncryptedAccountNumber(),
                                 employeeBankDetail.getBicCode(),
                                 employeeBankDetail.getAccountType()
                         )).toList();
@@ -270,7 +269,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     employeeEmergencyContactDTOS
             );
 
-            log.info("{} {} success for employeeId={}.", params);
+            log.info("{} {} success for employeeId={}.", CLASS_NAME, functionName, employeeId);
             return Optional.of(new EmployeeInfoDTO(
                     resultEmployeeId,
                     result.getCreatedAt(),
@@ -278,28 +277,28 @@ public class EmployeeServiceImpl implements EmployeeService {
             ));
         }
 
-        log.info("{} {} fail. Employee info with employeeId={} not exist.", params);
+        log.info("{} {} fail. Employee info with employeeId={} not exist.", CLASS_NAME, functionName, employeeId);
         return Optional.empty();
     }
 
     @Override
     public int updateEmployeeInfoById(long employeeId, EmployeeDTO employeeDTO) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. employeeId={}", new Object[]{CLASS_NAME, functionName, employeeId});
+        log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
 
         Integer status = transactionTemplate.execute(transactionStatus -> {
             try {
                 Optional<Employee> employee = employeeRepository.findById(employeeId);
 
-                if (!employee.isPresent()) {
-                    log.info("{} {} not found for employeeId={}", new Object[]{CLASS_NAME, functionName, employeeId});
+                if (employee.isEmpty()) {
+                    log.info("{} {} not found for employeeId={}", CLASS_NAME, functionName, employeeId);
                     transactionStatus.setRollbackOnly();
                     return -2;
                 } else {
                     Optional<Long> duplicateIcNumberEmployeeId = employeeRepository.findIdByIcNumber(employeeDTO.icNumber());
 
                     if ((duplicateIcNumberEmployeeId.isPresent()) && (employeeId != duplicateIcNumberEmployeeId.get())) {
-                        log.info("{} {} duplicated ic number for employeeId={} with other employee", new Object[]{CLASS_NAME, functionName, employeeId});
+                        log.info("{} {} duplicated ic number for employeeId={} with other employee", CLASS_NAME, functionName, employeeId);
                         transactionStatus.setRollbackOnly();
                         return -3;
                     } else {
@@ -337,7 +336,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                                             snowFlakeIdGenerator.nextId(),
                                             successEmployeeId,
                                             employeeBankDetailDTO.bankName(),
-                                            employeeBankDetailDTO.accountNumber(), // TODO: update for encrypting the account number
+                                            employeeBankDetailDTO.accountNumber(),
                                             employeeBankDetailDTO.bicCode(),
                                             employeeBankDetailDTO.accountType()
                                     )).toList();
@@ -368,7 +367,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     }
                 }
             } catch (Exception e) {
-                log.error("{} {} exception occurred for transaction. Message={}", new Object[]{CLASS_NAME, functionName, e.getMessage()});
+                log.error("{} {} exception occurred for transaction. Message={}", CLASS_NAME, functionName, e.getMessage());
 
                 transactionStatus.setRollbackOnly();
                 return -1;
@@ -377,14 +376,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         int finalStatus = Optional.ofNullable(status).orElse(0);
 
-        log.info("{} {} end. employeeId={}, status={}", new Object[]{CLASS_NAME, functionName, employeeId, finalStatus});
+        log.info("{} {} end. employeeId={}, status={}", CLASS_NAME, functionName, employeeId, finalStatus);
         return finalStatus;
     }
 
     @Override
     public int deleteEmployeeInfoById(long employeeId) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. employeeId={}", new Object[]{CLASS_NAME, functionName, employeeId});
+        log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
 
         Integer status = transactionTemplate.execute(transactionStatus -> {
 
@@ -414,13 +413,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                         return 1;
                     }
                 } else {
-                    log.info("{} {} for employeeId={} not found.", new Object[]{CLASS_NAME, functionName, employeeId});
+                    log.info("{} {} for employeeId={} not found.", CLASS_NAME, functionName, employeeId);
 
                     transactionStatus.setRollbackOnly();
                     return -1;
                 }
             } catch (Exception e) {
-                log.error("{} {} exception occurred for transaction. Message={}", new Object[]{CLASS_NAME, functionName, e.getMessage()});
+                log.error("{} {} exception occurred for transaction. Message={}", CLASS_NAME, functionName, e.getMessage());
 
                 transactionStatus.setRollbackOnly();
                 return -3;
@@ -428,7 +427,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         });
 
         int finalStatus = Optional.ofNullable(status).orElse(0);
-        log.info("{} {} end. employeeId={}, Status={}", new Object[]{CLASS_NAME, functionName, employeeId, finalStatus});
+        log.info("{} {} end. employeeId={}, Status={}", CLASS_NAME, functionName, employeeId, finalStatus);
         return finalStatus;
     }
 }
