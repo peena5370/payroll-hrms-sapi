@@ -34,7 +34,7 @@ pagehelper.support-methods-arguments=true
 
 # Spring boot context path
 server.port=6000
-server.servlet.context-path=/payroll
+server.servlet.context-path=/payroll-hrms
 server.tomcat.max-threads=200
 server.tomcat.connection-timeout=30000
 server.shutdown=graceful

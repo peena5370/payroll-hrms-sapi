@@ -1,0 +1,399 @@
+@baseUrl = http://localhost:6000
+@contextPath = payroll-hrms-sapi
+@token = Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImR1bW15LXRlc3Qta2lkLTEiLCJ0eXAiOiJKV1QifQ.eyJqdGkiOiJjMmFlNGNmYS02MWIzLTRlNzAtYTEyMC1kZWU0OWQ3MmRlMzMiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgwL3VzZXItc2VydmljZS5jb20iLCJzdWIiOiIyMjIyMjIyMjIiLCJhdWQiOlsicGF5cm9sbC1zZXJ2aWNlIiwiaHJtcy1zZXJ2aWNlIl0sImlhdCI6MTc2Mjg0Nzg4OCwibmJmIjoxNzYyODQ3ODg4LCJhdXRoX3RpbWUiOjE3NjI4NDc4ODgsImV4cCI6MTc5NDM4Mzg4OCwidWlkIjozOTI1OTExMTA2OTcxNjQ4MCwiZWlkIjoyMjIyMjIyMjIsImVtYWlsIjoidGVzdEB0ZXN0ZW1haWwuY29tIiwicm9sZXMiOlsiYWRtaW5pc3RyYXRvciJdfQ.fvVRAmuqsP7Ev3uUsjGRiqu692e5HS0HiccwxOSe345iJROtmw7v3SBz7wazOYDde7tGB6svUvliSuhdvVTgfTTXkszGl1Ndqcb7oho2-2VqPV0EjPazospG-p-r0l6NNl4prdNbkXEEB0rSwN2ll3EyRadmz8erNG5P_BZv3cZ-bllPAd73H_Fhsj7PN0UtwD5X1q9gsgU8rne4e1i5Ky-jU7-dmvWnBLeCPKxVAFitrK6V0Tiy-KdKAPiJ-mXJyCHVBKoHHYR24ekWQRc80a015hBZKJhv9SSNmx55wUcfZZvIddxNk_vWixi3vT6JLhIlP8G1PcUE5XpU8YOkCg
+@contentType = application/json
+
+###
+
+POST {{baseUrl}}/{{contextPath}}/api/department
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "departmentName": "test department",
+    "costCenterCode": "TD-1009",
+    "description": "description",
+    "parentDepartmentId": null,
+    "location": "location",
+    "phoneExtensionCode": "001",
+    "departmentEmail": "department1@email.com"
+}
+
+###
+
+GET {{baseUrl}}/{{contextPath}}/api/department?offset=0&limit=50
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+@departmentId = 330197757539258368
+GET {{baseUrl}}/{{contextPath}}/api/department/{{departmentId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+PUT {{baseUrl}}/{{contextPath}}/api/department/{{departmentId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "departmentName": "test department 111",
+    "costCenterCode": "TD-1009",
+    "description": "description",
+    "parentDepartmentId": null,
+    "location": "location",
+    "phoneExtensionCode": "001",
+    "departmentEmail": "department1@email.com"
+}
+
+###
+
+DELETE {{baseUrl}}/{{contextPath}}/api/department/{{departmentId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+POST {{baseUrl}}/{{contextPath}}/api/department/employee
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "departmentId": 323615892397232128,
+    "departmentFUId": 327281643196911616,
+    "employeeId": 326140576707776512,
+    "isPrimary": true,
+    "isManager": false,
+    "joinedAt": "2024-12-31",
+    "leavedAt": "2025-12-31"
+}
+
+###
+
+@departmentEid = 327286159396966400
+GET {{baseUrl}}/{{contextPath}}/api/department/employee/{{departmentEid}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+GET {{baseUrl}}/{{contextPath}}/api/department/employee?offset=0&limit=50
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+PUT {{baseUrl}}/{{contextPath}}/api/department/employee/{{departmentEid}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "departmentId": 323615892397232128,
+    "departmentFUId": 123456789111111,
+    "employeeId": 326140576707776512,
+    "isPrimary": true,
+    "isManager": false,
+    "joinedAt": "2024-12-31",
+    "leavedAt": null
+}
+
+###
+
+DELETE {{baseUrl}}/{{contextPath}}/api/department/employee/{{departmentEid}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+POST {{baseUrl}}/{{contextPath}}/api/department/unit
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "departmentId": 323661558498594816,
+    "facilityId": 325450974741270528
+}
+
+###
+
+@facilityId = 325450974741270528
+GET {{baseUrl}}/{{contextPath}}/api/department/unit/details?facility-id={{facilityId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+@departmentFUId = 327281931962159104
+DELETE {{baseUrl}}/{{contextPath}}/api/department/unit/{{departmentFUId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+POST {{baseUrl}}/{{contextPath}}/api/facility
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "facilityName": "test facility 11",
+    "addressLine1": "address 1 222,qweqwe",
+    "addressLine2": "address 2, 123, road",
+    "city": "city name",
+    "postalCode": "E123456",
+    "country": "country",
+    "contactPersonId": 123456789,
+    "facilityPhoneNumber": "+60123456789"
+}
+
+###
+
+GET {{baseUrl}}/{{contextPath}}/api/facility?offset=0&limit=50
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+@facilityId = 330199268122038272
+GET {{baseUrl}}/{{contextPath}}/api/facility/{{facilityId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+PUT {{baseUrl}}/{{contextPath}}/api/facility/{{facilityId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "facilityName": "test facility 11",
+    "addressLine1": "address 1 222,qweqwe",
+    "addressLine2": "address 2, 123, road",
+    "city": "city name",
+    "postalCode": "E123456",
+    "country": "country",
+    "contactPersonId": 123456789,
+    "facilityPhoneNumber": "+60123456789"
+}
+
+###
+
+DELETE {{baseUrl}}/{{contextPath}}/api/facility/{{facilityId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+POST {{baseUrl}}/{{contextPath}}/api/employee
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "firstName": "test employee",
+    "lastName": "last",
+    "dateOfBirth": "1990-12-31",
+    "icNumber": "A1234-567-912",
+    "gender": "PREFER_NOT_TO_SAY",
+    "email": "testemployee12@email.com",
+    "phoneNumber": "+1234567890",
+    "addressLine1": "address 1",
+    "addressLine2": "address 2",
+    "city": "city 1",
+    "state": "state 1",
+    "postalCode": "A333333",
+    "country": "country 1",
+    "hireDate": "2025-12-31",
+    "employmentStatus": "PROBATION",
+    "jobTitle": "Test Job Title",
+    "managerId": 1234567890,
+    "bankDetails": [
+        {
+            "bankName": "bank name 1",
+            "accountNumber": "123456789123",
+            "bicCode": "CIBBMYKA",
+            "accountType": "Saving account"
+        }
+    ],
+    "emergencyContacts": [
+        {
+            "contactPersonName": "contact person 1",
+            "relationship": "father",
+            "phoneNumber": "+22234567890",
+            "email": null
+        }
+    ]
+}
+
+###
+
+GET {{baseUrl}}/{{contextPath}}/api/employee?offset=0&limit=50
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+@employeeId = 330199879165022208
+GET {{baseUrl}}/{{contextPath}}/api/employee/{{employeeId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+PUT {{baseUrl}}/{{contextPath}}/api/employee/{{employeeId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "firstName": "test employee",
+    "lastName": "last",
+    "dateOfBirth": "1990-12-31",
+    "icNumber": "A1234-567-912",
+    "gender": "PREFER_NOT_TO_SAY",
+    "email": "testemployee12@email.com",
+    "phoneNumber": "+1234567890",
+    "addressLine1": "address 1",
+    "addressLine2": "address 2",
+    "city": "city 1",
+    "state": "state 1",
+    "postalCode": "A333333",
+    "country": "country 1",
+    "hireDate": "2025-12-31",
+    "employmentStatus": "PROBATION",
+    "jobTitle": "Test Job Title",
+    "managerId": 1234567890,
+    "bankDetails": [
+        {
+            "bankName": "bank name 1",
+            "accountNumber": "123456789123",
+            "bicCode": "CIBBMYKA",
+            "accountType": "Saving account"
+        }
+    ],
+    "emergencyContacts": [
+        {
+            "contactPersonName": "contact person 1",
+            "relationship": "father",
+            "phoneNumber": "+22234567890",
+            "email": null
+        }
+    ]
+}
+
+###
+
+DELETE {{baseUrl}}/{{contextPath}}/api/employee/{{employeeId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+POST {{baseUrl}}/{{contextPath}}/api/promotion
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "employeeId": 327241733396107264,
+    "oldJobTitle": "old job title",
+    "newJobTitle": "new job title",
+    "oldDepartmentId": 323615892397232128,
+    "newDepartmentId": 323616566673543168,
+    "promoteDate": "2025-12-31",
+    "incrementAmount": 1234.56,
+    "reason": "reason",
+    "approverId": 326140576707776512
+}
+
+###
+
+@promotionEid = 327241733396107264
+{{baseUrl}}/{{contextPath}}/api/promotion?employeeId={{promotionEid}}&offset=0&limit=50
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+@promotionId = 330200546113884160
+GET {{baseUrl}}/{{contextPath}}/api/promotion/{{promotionId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+PUT {{baseUrl}}/{{contextPath}}/api/promotion/{{promotionId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "employeeId": 327241733396107264,
+    "oldJobTitle": "old job title",
+    "newJobTitle": "new job title",
+    "oldDepartmentId": 323615892397232128,
+    "newDepartmentId": 323616566673543168,
+    "promoteDate": "2025-12-31",
+    "incrementAmount": 1234.56,
+    "reason": "reason",
+    "approverId": 326140576707776512
+}
+
+###
+
+DELETE {{baseUrl}}/{{contextPath}}/api/promotion/{{promotionId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+POST {{baseUrl}}/{{contextPath}}/api/resignation
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "employeeId": 327241733396107264,
+    "resignDate": "2025-10-31",
+    "lastServiceDate": "2025-12-31",
+    "reason": "resign reason",
+    "noticePeriod": 60,
+    "isExitInterviewConducted": false,
+    "exitInterviewNote": "note",
+    "status": "in-progress",
+    "approverId": 326140576707776512
+}
+
+###
+
+@resignationEid = 327241733396107264
+GET {{baseUrl}}/{{contextPath}}/api/resignation?employeeId={{resignationEid}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+@resignationId = 330201325138743296
+GET {{baseUrl}}/{{contextPath}}/api/resignation/{{resignationId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+###
+
+PUT {{baseUrl}}/{{contextPath}}/api/resignation/{{resignationId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
+
+{
+    "employeeId": 327241733396107264,
+    "resignDate": "2025-10-30",
+    "lastServiceDate": "2025-12-31",
+    "reason": "resign reason",
+    "noticePeriod": 60,
+    "isExitInterviewConducted": false,
+    "exitInterviewNote": "note",
+    "status": "in-progress",
+    "approverId": 326140576707776512
+}
+
+###
+
+DELETE {{baseUrl}}/{{contextPath}}/api/resignation/{{resignationId}}
+Authorization: {{token}}
+Content-Type: {{contentType}}
