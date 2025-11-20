@@ -1,5 +1,6 @@
 package com.company.payroll.allowance.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -35,7 +36,7 @@ public class OneTimePaymentEmployee {
     private long paymentTypeId;
 
     @Column(name = "amount", nullable = false)
-    private double amount;
+    private BigDecimal amount;
 
     @Column(name = "approval_date")
     private LocalDateTime approvalDate;

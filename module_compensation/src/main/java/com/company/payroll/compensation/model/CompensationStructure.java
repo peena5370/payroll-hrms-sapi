@@ -1,5 +1,6 @@
 package com.company.payroll.compensation.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -32,7 +33,7 @@ public class CompensationStructure {
     private long employeeId;
 
     @Column(name = "base_annual_salary", nullable = false)
-    private double baseAnnualSalary;
+    private BigDecimal baseAnnualSalary;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_frequency", nullable = false)
@@ -45,10 +46,10 @@ public class CompensationStructure {
     private boolean isActive;
 
     @Column(name = "epf_employee_rate")
-    private Double epfEmployeeRate;
+    private BigDecimal epfEmployeeRate;
 
     @Column(name = "epf_employer_rate")
-    private Double epfEmployerRate;
+    private BigDecimal epfEmployerRate;
 
     @Column(name = "socso_group", nullable = false)
     private String socsoGroup;

@@ -1,5 +1,6 @@
 package com.company.payroll.allowance.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -31,7 +32,7 @@ public class AllowanceEmployee {
     private long allowanceId;
 
     @Column(name = "amount", nullable = false)
-    private double amount;
+    private BigDecimal amount;
 
     @Column(name = "formula")
     private String formula;

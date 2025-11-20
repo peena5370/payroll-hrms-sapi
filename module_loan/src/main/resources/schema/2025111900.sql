@@ -8,5 +8,5 @@ CREATE TABLE `loan_application` (
   `status` varchar(15) NOT NULL COMMENT 'Loan application approval status',
   `created_at` datetime NULL COMMENT 'Data created date',
   `updated_at` datetime NULL COMMENT 'Data updated date',
-  PRIMARY KEY (`compensation_id`)
+  PRIMARY KEY (`loan_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
