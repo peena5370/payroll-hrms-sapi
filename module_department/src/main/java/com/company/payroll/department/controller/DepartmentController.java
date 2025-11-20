@@ -1,19 +1,37 @@
 package com.company.payroll.department.controller;
 
-import com.company.payroll.department.dto.*;
-import com.company.payroll.department.service.DepartmentEmployeeService;
-import com.company.payroll.department.service.DepartmentFacilityService;
-import com.company.payroll.department.service.DepartmentService;
-import com.company.payroll.util.response.CommonResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.springframework.http.HttpStatus.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.company.payroll.department.dto.DepartmentDTO;
+import com.company.payroll.department.dto.DepartmentEmployeeDTO;
+import com.company.payroll.department.dto.DepartmentEmployeeDetailDTO;
+import com.company.payroll.department.dto.DepartmentFacilityDTO;
+import com.company.payroll.department.dto.DepartmentFacilityDetailDTO;
+import com.company.payroll.department.dto.DepartmentInfoDTO;
+import com.company.payroll.department.service.DepartmentEmployeeService;
+import com.company.payroll.department.service.DepartmentFacilityService;
+import com.company.payroll.department.service.DepartmentService;
+import com.company.payroll.util.response.CommonResponse;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -56,8 +74,8 @@ public class DepartmentController {
 
     @GetMapping
     public ResponseEntity<CommonResponse> getDepartmentInfoByOffsetLimit
-            (@RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
-             @RequestParam(value = "limit", required = false, defaultValue = "5") Integer limit) {
+            (@RequestParam(required = false, defaultValue = "0") Integer offset,
+             @RequestParam(required = false, defaultValue = "5") Integer limit) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
         log.info("{} {} start. Request param: offset={}, limit={}", CLASS_NAME, functionName, offset, limit);
 
@@ -151,8 +169,8 @@ public class DepartmentController {
 
     @GetMapping("/employee")
     public ResponseEntity<CommonResponse> getAllDepartmentEmployeesByOffsetAndLimit(
-            @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
-            @RequestParam(value = "limit", required = false, defaultValue = "5") Integer limit) {
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "5") Integer limit) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
         log.info("{} {} start. Request param: offset={}, limit={}", CLASS_NAME, functionName, offset, limit);
 

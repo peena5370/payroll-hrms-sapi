@@ -19,6 +19,14 @@
     <dependencies>
         <dependency>
             <groupId>com.company.payroll</groupId>
+            <artifactId>module_allowance</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.company.payroll</groupId>
+            <artifactId>module_compensation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.company.payroll</groupId>
             <artifactId>module_department</artifactId>
         </dependency>
         <dependency>

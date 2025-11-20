@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.5.7</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -29,6 +30,9 @@
         <module>module_common</module>
         <module>module_promotion</module>
         <module>module_resignation</module>
+        <module>module_compensation</module>
+        <module>module_allowance</module>
+        <module>module_loan</module>
     </modules>
 
     <properties>
@@ -119,6 +123,16 @@
             </dependency>
             <dependency>
                 <groupId>com.company.payroll</groupId>
+                <artifactId>module_allowance</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.company.payroll</groupId>
+                <artifactId>module_compensation</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.company.payroll</groupId>
                 <artifactId>module_department</artifactId>
                 <version>1.0.0</version>
             </dependency>
@@ -126,6 +140,11 @@
                 <groupId>com.company.payroll</groupId>
                 <artifactId>module_employee</artifactId>
                 <version>1.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.company.payroll</groupId>
+                <artifactId>module_loan</artifactId>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.company.payroll</groupId>
