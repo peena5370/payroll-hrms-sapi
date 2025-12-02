@@ -79,7 +79,7 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
     @Override
     public List<CompanyFacilityDetailDTO> getAllCompanyFacilityDetailByOffsetAndLimit(int offset, int limit) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", CLASS_NAME, functionName);
+        log.info("{} {} start. offset={}, limit={}", CLASS_NAME, functionName, offset, limit);
 
         List<CompanyFacilityDetailDTO> facilityDetailDTOList = new ArrayList<>();
 
