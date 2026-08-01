@@ -1,9 +1,18 @@
 package com.company.payroll.department.service.impl;
 
-import com.company.payroll.common.FacilityCommonService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.company.payroll.common.service.FacilityCommonService;
 import com.company.payroll.department.dto.DepartmentDTO;
-import com.company.payroll.department.dto.DepartmentFacilityDetailDTO;
 import com.company.payroll.department.dto.DepartmentFacilityDTO;
+import com.company.payroll.department.dto.DepartmentFacilityDetailDTO;
 import com.company.payroll.department.model.Department;
 import com.company.payroll.department.model.DepartmentEmployee;
 import com.company.payroll.department.model.DepartmentFacilityUnit;
@@ -12,11 +21,8 @@ import com.company.payroll.department.repository.DepartmentFacilityUnitRepositor
 import com.company.payroll.department.repository.DepartmentRepository;
 import com.company.payroll.department.service.DepartmentFacilityService;
 import com.company.payroll.util.util.SnowFlakeIdGenerator;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service

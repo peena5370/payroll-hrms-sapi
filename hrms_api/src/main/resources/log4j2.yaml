@@ -4,9 +4,11 @@ Configuration:
   Properties:
     Property:
       - name: logPath
-        value: "logs" # Define a property for your log directory
+        value: "${env:LOG_PATH:-${sys:user.dir}}/logs" # Define a property for your log directory
       - name: logFileName
         value: "application" # Base name for your log file
+      - name: appName
+        value: "payroll-hrms-sapi"
 
   Appenders:
     Console:
@@ -14,15 +16,16 @@ Configuration:
       target: SYSTEM_OUT
       PatternLayout:
         # %c{1.} for abbreviated logger name, %t for thread, %msg for message, %n for new line, %throwable for stack trace
-        pattern: "%highlight{%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %c{1.} [%t] %msg%n%throwable}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=blue}"
-
+        # pattern: "%highlight{%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %c{1.} [%t] %msg%n%throwable}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=blue}"
+        pattern: "%highlight{%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${appName}] [%t] [%X{traceId:-},%X{spanId:-}] [%X{contextId:-}] %c{1.} - %msg%n%throwable}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=blue}"
     RollingFile:
       - name: RollingFile_Appender
         fileName: "${logPath}/${logFileName}.log" # Current log file
         filePattern: "${logPath}/archive/${logFileName}-%d{yyyy-MM-dd}.%i.log.gz" # Pattern for rolled archives
         PatternLayout:
           # You can use a similar pattern here, or a simpler one for file logs
-          pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %c{1.} [%t] %msg%n%throwable"
+          # pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %c{1.} [%t] %msg%n%throwable"
+          pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${appName}] [%t] [%X{traceId:-},%X{spanId:-}] [%X{contextId:-}] %c{1.} - %msg%n%throwable"
         Policies:
           # TimeBasedTriggeringPolicy for daily rollover
           TimeBasedTriggeringPolicy:

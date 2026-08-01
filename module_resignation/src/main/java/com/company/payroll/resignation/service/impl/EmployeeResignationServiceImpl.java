@@ -68,7 +68,7 @@ public class EmployeeResignationServiceImpl implements EmployeeResignationServic
     @Override
     public List<EmployeeResignationDetailDTO> getAllResignationInfoByOffsetAndLimitOrEmployeeId(Long employeeId, int offset, int limit) {
         final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", CLASS_NAME, functionName);
+        log.info("{} {} start. employeeId={}, offset={}, limit={}", CLASS_NAME, functionName, employeeId, offset, limit);
 
         List<EmployeeResignationDetailDTO> employeeResignationDetailDTOList = new ArrayList<>();
 

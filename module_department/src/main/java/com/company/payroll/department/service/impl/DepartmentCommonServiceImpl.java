@@ -1,14 +1,16 @@
 package com.company.payroll.department.service.impl;
 
-import com.company.payroll.common.DepartmentCommonService;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.company.payroll.common.service.DepartmentCommonService;
 import com.company.payroll.department.model.DepartmentEmployee;
 import com.company.payroll.department.model.DepartmentFacilityUnit;
 import com.company.payroll.department.repository.DepartmentEmployeeRepository;
 import com.company.payroll.department.repository.DepartmentFacilityUnitRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service("departmentCommonService")

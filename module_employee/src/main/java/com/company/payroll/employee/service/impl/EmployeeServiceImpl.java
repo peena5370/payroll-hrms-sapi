@@ -1,6 +1,16 @@
 package com.company.payroll.employee.service.impl;
 
-import com.company.payroll.common.DepartmentCommonService;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import com.company.payroll.common.service.DepartmentCommonService;
 import com.company.payroll.employee.dto.EmployeeBankDetailDTO;
 import com.company.payroll.employee.dto.EmployeeDTO;
 import com.company.payroll.employee.dto.EmployeeEmergencyContactDTO;
@@ -12,17 +22,10 @@ import com.company.payroll.employee.repository.EmployeeBankDetailRepository;
 import com.company.payroll.employee.repository.EmployeeEmergencyContactRepository;
 import com.company.payroll.employee.repository.EmployeeRepository;
 import com.company.payroll.employee.service.EmployeeService;
+import com.company.payroll.exception.classes.ResourceNotFoundException;
 import com.company.payroll.util.util.SnowFlakeIdGenerator;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -215,8 +218,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Optional<EmployeeInfoDTO> getEmployeeInfoById(long employeeId) {
         final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
 
-        log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
-
         Optional<Employee> employee = this.employeeRepository.findById(employeeId);
 
         if (employee.isPresent()) {
@@ -277,8 +278,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             ));
         }
 
-        log.info("{} {} fail. Employee info with employeeId={} not exist.", CLASS_NAME, functionName, employeeId);
-        return Optional.empty();
+        throw new ResourceNotFoundException("Employee info with employeeId=" + employeeId + " not exist.");
     }
 
     @Override
