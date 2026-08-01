@@ -49,7 +49,7 @@ A FYP project during degree study
 5. payroll-accounting-management (To be implement)
 - The core project for the payroll HRMS system which gathered the payroll accounting, tax management, salary management and more. 
 
-### Front-end
+### Front-end (to be implement)
 | Tools | Description |
 | :---- | :---------- |
 | React.js | React.js version 19 web UI framework |

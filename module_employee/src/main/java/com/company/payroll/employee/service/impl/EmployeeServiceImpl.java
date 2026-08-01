@@ -22,6 +22,7 @@ import com.company.payroll.employee.repository.EmployeeBankDetailRepository;
 import com.company.payroll.employee.repository.EmployeeEmergencyContactRepository;
 import com.company.payroll.employee.repository.EmployeeRepository;
 import com.company.payroll.employee.service.EmployeeService;
+import com.company.payroll.exception.classes.ResourceNotFoundException;
 import com.company.payroll.util.util.SnowFlakeIdGenerator;
 
 import lombok.extern.slf4j.Slf4j;
@@ -217,8 +218,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Optional<EmployeeInfoDTO> getEmployeeInfoById(long employeeId) {
         final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
 
-        log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
-
         Optional<Employee> employee = this.employeeRepository.findById(employeeId);
 
         if (employee.isPresent()) {
@@ -279,8 +278,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             ));
         }
 
-        log.info("{} {} fail. Employee info with employeeId={} not exist.", CLASS_NAME, functionName, employeeId);
-        return Optional.empty();
+        throw new ResourceNotFoundException("Employee info with employeeId=" + employeeId + " not exist.");
     }
 
     @Override

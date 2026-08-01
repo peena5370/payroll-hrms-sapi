@@ -1,6 +1,7 @@
 package com.company.payroll.compensation.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -12,25 +13,23 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "compensation_structure")
 public class CompensationStructure {
 
     @Id
     @Column(name = "compensation_id")
-    private long compensationId;
+    private Long compensationId;
 
     @Column(name = "employee_id", nullable = false)
-    private long employeeId;
+    private Long employeeId;
 
     @Column(name = "base_annual_salary", nullable = false)
     private BigDecimal baseAnnualSalary;
@@ -43,7 +42,7 @@ public class CompensationStructure {
     private LocalDate effectiveDate;
 
     @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    private Boolean active;
 
     @Column(name = "epf_employee_rate")
     private BigDecimal epfEmployeeRate;
@@ -55,8 +54,8 @@ public class CompensationStructure {
     private String socsoGroup;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 }

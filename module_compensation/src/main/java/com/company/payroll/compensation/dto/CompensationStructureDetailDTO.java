@@ -1,10 +1,10 @@
 package com.company.payroll.compensation.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record CompensationStructureDetailDTO(
     Long compensationId,
-    LocalDateTime createdAt,
+    Instant createdAt,
     CompensationStructureDTO detail
 ) {
 

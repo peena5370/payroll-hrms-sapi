@@ -10,6 +10,7 @@ import com.company.payroll.compensation.model.CompensationStructure;
 
 public interface CompensationStructureRepository extends JpaRepository<CompensationStructure, Long> {
 
-    @Query("SELECT cs FROM CompensationStructure cs WHERE cs.employeeId = :employeeId")
-    Optional<CompensationStructure> findByEmployeeId(@Param("employeeId") Long employeeId);
+    boolean existsByEmployeeId(Long employeeId);
+
+    Optional<CompensationStructure> findByEmployeeId(Long employeeId); // if this one i want to make it to chain for orElseThrow, then how
 }

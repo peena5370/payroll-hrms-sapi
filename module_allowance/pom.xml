@@ -12,6 +12,10 @@
     <artifactId>module_allowance</artifactId>
 
     <dependencies>
+          <dependency>
+            <groupId>com.company.payroll</groupId>
+            <artifactId>module_exception</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.company.payroll</groupId>
             <artifactId>module_util</artifactId>
