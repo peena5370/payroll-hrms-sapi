@@ -1,35 +1,33 @@
 package com.company.payroll.allowance.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "allowance_employee")
 public class AllowanceEmployee {
 
     @Id
     @Column(name = "allowance_eid")
-    private long allowanceEid;
+    private Long allowanceEid;
 
     @Column(name = "employee_id", nullable = false)
-    private long employeeId;
+    private Long employeeId;
 
     @Column(name = "allowance_id", nullable = false)
-    private long allowanceId;
+    private Long allowanceId;
 
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
@@ -44,8 +42,8 @@ public class AllowanceEmployee {
     private LocalDate effectiveEndDate;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 }

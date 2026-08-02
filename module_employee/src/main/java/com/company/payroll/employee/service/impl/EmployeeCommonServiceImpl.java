@@ -18,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service("employeeCommonService")
 public class EmployeeCommonServiceImpl implements EmployeeCommonService {
 
-    private static final String CLASS_NAME = "[EmployeeCommonServiceImpl]";
-
     private final EmployeeRepository employeeRepository;
 
     private int calculateTenureInYears(LocalDate hiredDate) {
@@ -64,8 +62,6 @@ public class EmployeeCommonServiceImpl implements EmployeeCommonService {
 
     @Override
     public LoanEligibleStatus getEmployeeLoanEligibility(long employeeId, BigDecimal loanAmount) {
-        final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
 
         LoanEligibleStatus loanResult = LoanEligibleStatus.NOT_ELIGIBLE;
 
@@ -87,7 +83,6 @@ public class EmployeeCommonServiceImpl implements EmployeeCommonService {
             }
         }
 
-        log.info("{} {} end. employeeId={}, status={}", CLASS_NAME, functionName, employeeId, loanResult);
         return loanResult;
     }
 

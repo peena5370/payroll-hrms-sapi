@@ -2,24 +2,22 @@ package com.company.payroll.employee.model;
 
 import com.company.payroll.employee.util.AccountNumberConverter;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "employee_bank_detail")
 public class EmployeeBankDetail {
     @Id
     @Column(name = "bank_detail_id")
-    private long bankDetailId;
+    private Long bankDetailId;
 
     @Column(name = "employee_id", nullable = false)
-    private long employeeId;
+    private Long employeeId;
 
     @Column(name = "bank_name", nullable = false)
     private String bankName;

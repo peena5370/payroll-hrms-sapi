@@ -4,23 +4,21 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "department")
 public class Department {
     @Id
     @Column(name = "department_id")
-    private long departmentId;
+    private Long departmentId;
 
     @Column(name = "department_name", nullable = false)
     private String departmentName;
@@ -44,8 +42,8 @@ public class Department {
     private String departmentEmail;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 }

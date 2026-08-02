@@ -22,7 +22,7 @@ public class FacilityCommonServiceImpl implements FacilityCommonService {
 
     @Override
     public boolean isCompanyFacilityExist(long facilityId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "isCompanyFacilityExist";
         log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         Optional<CompanyFacility> facility = companyFacilityRepository.findById(facilityId);

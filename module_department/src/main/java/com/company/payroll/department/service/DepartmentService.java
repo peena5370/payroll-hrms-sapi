@@ -4,17 +4,16 @@ import com.company.payroll.department.dto.DepartmentDTO;
 import com.company.payroll.department.dto.DepartmentInfoDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface DepartmentService {
 
     List<DepartmentInfoDTO> getAllDepartmentInfoByOffsetLimit(int offset, int limit);
 
-    Optional<DepartmentInfoDTO> getDepartmentInfoByDepartmentId(long departmentId);
+    DepartmentInfoDTO getDepartmentInfoByDepartmentId(long departmentId);
 
-    int createDepartmentInfo(DepartmentDTO departmentDTO);
+    void createDepartmentInfo(DepartmentDTO departmentDTO);
 
-    int updateDepartmentInfoById(long departmentId, DepartmentDTO departmentDTO);
+    void updateDepartmentInfoById(long departmentId, DepartmentDTO departmentDTO);
 
-    int deleteDepartmentInfoById(long departmentId);
+    void deleteDepartmentInfoById(long departmentId);
 }

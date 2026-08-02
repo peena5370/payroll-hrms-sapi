@@ -18,6 +18,10 @@
         </dependency>
         <dependency>
             <groupId>com.company.payroll</groupId>
+            <artifactId>module_exception</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.company.payroll</groupId>
             <artifactId>module_security</artifactId>
         </dependency>
         <dependency>

@@ -28,7 +28,7 @@ public class DepartmentCommonServiceImpl implements DepartmentCommonService {
 
     @Override
     public boolean isFacilityUnitInUsed(long facilityId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "isFacilityUnitInUsed";
         log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         List<DepartmentFacilityUnit> result = departmentFacilityUnitRepository.getAllByFacilityId(facilityId);
@@ -41,7 +41,7 @@ public class DepartmentCommonServiceImpl implements DepartmentCommonService {
 
     @Override
     public boolean isDepartmentEmployeeExist(long employeeId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "isDepartmentEmployeeExist";
         log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
 
         List<DepartmentEmployee> result = departmentEmployeeRepository.getAllByDepartmentByEmployeeId(employeeId);

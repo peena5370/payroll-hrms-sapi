@@ -1,10 +1,10 @@
 package com.company.payroll.employee.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record EmployeeInfoDTO(
         Long employeeId,
-        LocalDateTime createdAt,
+        Instant createdAt,
         EmployeeDTO detail
 ) {
 }

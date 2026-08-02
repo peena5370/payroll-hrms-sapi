@@ -28,7 +28,7 @@ public class FacilityController {
 
     @PostMapping
     public ResponseEntity<CommonResponse> createCompanyFacility(@RequestBody CompanyFacilityDTO companyFacilityDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "createCompanyFacility";
         log.info("{} {} start.", CLASS_NAME, functionName);
 
         int result = companyFacilityService.createCompanyFacilityDetail(companyFacilityDTO);
@@ -51,7 +51,7 @@ public class FacilityController {
     public ResponseEntity<CommonResponse> getCompanyFacilityDetailsByOffsetAndLimit(
             @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
             @RequestParam(value = "limit", required = false, defaultValue = "5") Integer limit) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "getCompanyFacilityDetailsByOffsetAndLimit";
         log.info("{} {} start. Request param: offset={}, limit={}", CLASS_NAME, functionName, offset, limit);
 
         List<CompanyFacilityDetailDTO> facilityList = companyFacilityService.getAllCompanyFacilityDetailByOffsetAndLimit(offset, limit);
@@ -66,7 +66,7 @@ public class FacilityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CommonResponse> getCompanyFacilityDetailById(@PathVariable("id") Long facilityId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "getCompanyFacilityDetailById";
         log.info("{} {} start. facilityId={}.", CLASS_NAME, functionName, facilityId);
 
         Optional<CompanyFacilityDetailDTO> facilityInfo = companyFacilityService.getCompanyFacilityDetailById(facilityId);
@@ -81,7 +81,7 @@ public class FacilityController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponse> updateCompanyFacilityDetailById(@PathVariable("id") Long facilityId, @RequestBody CompanyFacilityDTO companyFacilityDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "updateCompanyFacilityDetailById";
         log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
         int updatedResult = companyFacilityService.updateCompanyFacilityDetailById(facilityId, companyFacilityDTO);
 
@@ -102,7 +102,7 @@ public class FacilityController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponse> deleteCompanyFacilityDetailById(@PathVariable("id") Long facilityId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "deleteCompanyFacilityDetailById";
         log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         int deletedResult = companyFacilityService.deleteCompanyFacilityDetailById(facilityId);

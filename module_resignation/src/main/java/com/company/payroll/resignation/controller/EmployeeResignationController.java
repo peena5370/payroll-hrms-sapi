@@ -29,7 +29,7 @@ public class EmployeeResignationController {
 
     @PostMapping
     public ResponseEntity<CommonResponse> createResignationDetail(@RequestBody EmployeeResignationDTO employeeResignationDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "createResignationDetail";
         log.info("{} {} start.", CLASS_NAME, functionName);
 
         int result = employeeResignationService.createResignationInfo(employeeResignationDTO);
@@ -52,7 +52,7 @@ public class EmployeeResignationController {
             @RequestParam(value = "employeeId", required = false) Long employeeId,
             @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
             @RequestParam(value = "limit", required = false, defaultValue = "5") Integer limit) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "getAllResignationDetailsByOffsetAndLimitOrEmployeeId";
         log.info("{} {} start. Request param: employeeId={} offset={}, limit={}", CLASS_NAME, functionName, employeeId, offset, limit);
 
         List<EmployeeResignationDetailDTO> resignationList = employeeResignationService.getAllResignationInfoByOffsetAndLimitOrEmployeeId(employeeId, offset, limit);
@@ -67,7 +67,7 @@ public class EmployeeResignationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CommonResponse> getResignationDetailByResignationId(@PathVariable("id") Long resignationId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "getResignationDetailByResignationId";
         log.info("{} {} start. resignationId={}.", CLASS_NAME, functionName, resignationId);
 
         Optional<EmployeeResignationDetailDTO> resignationInfo = employeeResignationService.getResignationInfoById(resignationId);
@@ -83,7 +83,7 @@ public class EmployeeResignationController {
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponse> updateResignationDetailByResignationId(@PathVariable("id") Long resignationId,
                                                                                  @RequestBody EmployeeResignationDTO employeeResignationDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "updateResignationDetailByResignationId";
         log.info("{} {} start. resignationId={}", CLASS_NAME, functionName, resignationId);
 
         int updatedResult = employeeResignationService.updateResignationInfoById(resignationId, employeeResignationDTO);
@@ -104,7 +104,7 @@ public class EmployeeResignationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponse> deleteResignationDetailByResignationId(@PathVariable("id") Long resignationId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "deleteResignationDetailByResignationId";
         log.info("{} {} start. resignationId={}", CLASS_NAME, functionName, resignationId);
 
         int deletedResult = employeeResignationService.deleteResignationInfoById(resignationId);

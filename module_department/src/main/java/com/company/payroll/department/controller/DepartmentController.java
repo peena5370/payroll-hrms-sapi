@@ -1,13 +1,6 @@
 package com.company.payroll.department.controller;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,10 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.payroll.department.dto.DepartmentDTO;
 import com.company.payroll.department.dto.DepartmentEmployeeDTO;
-import com.company.payroll.department.dto.DepartmentEmployeeDetailDTO;
 import com.company.payroll.department.dto.DepartmentFacilityDTO;
-import com.company.payroll.department.dto.DepartmentFacilityDetailDTO;
-import com.company.payroll.department.dto.DepartmentInfoDTO;
 import com.company.payroll.department.service.DepartmentEmployeeService;
 import com.company.payroll.department.service.DepartmentFacilityService;
 import com.company.payroll.department.service.DepartmentService;
@@ -37,261 +27,133 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("api/department")
 public class DepartmentController {
-    private static final String CLASS_NAME = "[DepartmentController]";
+        private final DepartmentService departmentService;
+        private final DepartmentEmployeeService departmentEmployeeService;
+        private final DepartmentFacilityService departmentFacilityService;
 
-    private final DepartmentService departmentService;
-    private final DepartmentEmployeeService departmentEmployeeService;
-    private final DepartmentFacilityService departmentFacilityService;
+        public DepartmentController(DepartmentService departmentService,
+                        DepartmentEmployeeService departmentEmployeeService,
+                        DepartmentFacilityService departmentFacilityService) {
+                this.departmentService = departmentService;
+                this.departmentEmployeeService = departmentEmployeeService;
+                this.departmentFacilityService = departmentFacilityService;
+        }
 
-    public DepartmentController(DepartmentService departmentService,
-                                DepartmentEmployeeService departmentEmployeeService,
-                                DepartmentFacilityService departmentFacilityService) {
-        this.departmentService = departmentService;
-        this.departmentEmployeeService = departmentEmployeeService;
-        this.departmentFacilityService = departmentFacilityService;
-    }
+        @PostMapping
+        public ResponseEntity<CommonResponse> createDepartment(@RequestBody DepartmentDTO departmentDTO) {
+                departmentService.createDepartmentInfo(departmentDTO);
 
-    @PostMapping
-    public ResponseEntity<CommonResponse> createDepartment(@RequestBody DepartmentDTO departmentDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", CLASS_NAME, functionName);
+                return ResponseEntity.status(OK)
+                                .body(new CommonResponse(OK.value(), "Department info inserted success", null));
+        }
 
-        int result = departmentService.createDepartmentInfo(departmentDTO);
+        @GetMapping
+        public ResponseEntity<CommonResponse> getDepartmentInfoByOffsetLimit(
+                        @RequestParam(required = false, defaultValue = "0") Integer offset,
+                        @RequestParam(required = false, defaultValue = "5") Integer limit) {
 
-        Map<Integer, CommonResponse> responses = Map.ofEntries(
-                Map.entry(1, new CommonResponse(OK.value(), "Department info inserted success", null)),
-                Map.entry(0, new CommonResponse(BAD_REQUEST.value(), "Department info inserted failed", null)),
-                Map.entry(-1, new CommonResponse(INTERNAL_SERVER_ERROR.value(), "API exception encountered. Please check backend log for status", null)),
-                Map.entry(-2, new CommonResponse(BAD_REQUEST.value(), "Department info exist", null))
-        );
+                return ResponseEntity.status(OK)
+                                .body(new CommonResponse(OK.value(), "Success retrieve department info",
+                                                departmentService.getAllDepartmentInfoByOffsetLimit(offset, limit)));
+        }
 
-        CommonResponse response = responses.getOrDefault(result, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
-                CommonResponse.COMMON_ERROR_MESSAGE, null));
+        @GetMapping("/{id}")
+        public ResponseEntity<CommonResponse> getDepartmentInfoById(@PathVariable("id") Long departmentId) {
 
-        log.info("{} {} end. Response={}", CLASS_NAME, functionName, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
+                return ResponseEntity.status(OK).body(new CommonResponse(OK.value(),
+                                "Department info retrieve success.", departmentService
+                                                .getDepartmentInfoByDepartmentId(departmentId)));
+        }
 
-    @GetMapping
-    public ResponseEntity<CommonResponse> getDepartmentInfoByOffsetLimit
-            (@RequestParam(required = false, defaultValue = "0") Integer offset,
-             @RequestParam(required = false, defaultValue = "5") Integer limit) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. Request param: offset={}, limit={}", CLASS_NAME, functionName, offset, limit);
+        @PutMapping("/{id}")
+        public ResponseEntity<Object> updateDepartmentInfoById(@PathVariable("id") Long departmentId,
+                        @RequestBody DepartmentDTO departmentDTO) {
+                departmentService.updateDepartmentInfoById(departmentId, departmentDTO);
 
-        List<DepartmentInfoDTO> departmentList = departmentService.getAllDepartmentInfoByOffsetLimit(offset, limit);
+                return ResponseEntity.status(OK)
+                                .body(new CommonResponse(OK.value(), "Department info updated success", null));
+        }
 
-        CommonResponse response = departmentList.isEmpty() ?
-                new CommonResponse(BAD_REQUEST.value(), "Error when retrieving the department info.", null) :
-                new CommonResponse(OK.value(), "Success retrieve department info", departmentList);
+        @DeleteMapping("/{id}")
+        public ResponseEntity<CommonResponse> deleteDepartmentInfoById(@PathVariable("id") Long departmentId) {
+                departmentService.deleteDepartmentInfoById(departmentId);
 
-        log.info("{} {} end. Response={}", CLASS_NAME, functionName, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
+                return ResponseEntity.status(OK)
+                                .body(new CommonResponse(OK.value(), "Department info delete success.", null));
+        }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CommonResponse> getDepartmentInfoById(@PathVariable("id") Long departmentId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentId={}.", CLASS_NAME, functionName, departmentId);
+        @PostMapping("/employee")
+        public ResponseEntity<CommonResponse> createDepartmentEmployee(
+                        @RequestBody DepartmentEmployeeDTO departmentEmployeeDTO) {
+                departmentEmployeeService.createDepartmentEmployeeInfo(departmentEmployeeDTO);
 
-        Optional<DepartmentInfoDTO> departmentInfo = departmentService.getDepartmentInfoByDepartmentId(departmentId);
+                return ResponseEntity.status(OK)
+                                .body(new CommonResponse(OK.value(), "Department employee info inserted success",
+                                                null));
+        }
 
-        CommonResponse response = departmentInfo.map(departmentInfoDTO ->
-                        new CommonResponse(OK.value(), "Department info retrieve success.", departmentInfoDTO))
-                .orElseGet(() -> new CommonResponse(NOT_FOUND.value(), "Department info not found.", null));
+        @GetMapping("/employee")
+        public ResponseEntity<CommonResponse> getAllDepartmentEmployeesByOffsetAndLimit(
+                        @RequestParam(required = false, defaultValue = "0") Integer offset,
+                        @RequestParam(required = false, defaultValue = "5") Integer limit) {
 
-        log.info("{} {} end. Status={}", CLASS_NAME, functionName, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
+                return ResponseEntity.status(OK).body(new CommonResponse(OK.value(),
+                                "Success retrieve department employee info",
+                                departmentEmployeeService.getAllDepartmentEmployeeInfoByOffsetLimit(offset, limit)));
+        }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateDepartmentInfoById(@PathVariable("id") Long departmentId, @RequestBody DepartmentDTO departmentDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentId={}", CLASS_NAME, functionName, departmentId);
-        int updatedResult = departmentService.updateDepartmentInfoById(departmentId, departmentDTO);
+        @GetMapping("/employee/{id}")
+        public ResponseEntity<CommonResponse> getDepartmentEmployeeById(@PathVariable("id") Long departmentEid) {
 
-        Map<Integer, CommonResponse> responses = Map.ofEntries(
-                Map.entry(1, new CommonResponse(OK.value(), "Department info updated success", null)),
-                Map.entry(0, new CommonResponse(BAD_REQUEST.value(), "Department info updated failed", null)),
-                Map.entry(-1, new CommonResponse(INTERNAL_SERVER_ERROR.value(), "API exception encountered. Please check backend log for status", null)),
-                Map.entry(-2, new CommonResponse(NOT_FOUND.value(), "Department info not found", null)),
-                Map.entry(-3, new CommonResponse(BAD_REQUEST.value(), "Department cost center code duplicated", null))
-        );
+                return ResponseEntity.status(OK).body(new CommonResponse(OK.value(),
+                                "Department employee info retrieve success.",
+                                departmentEmployeeService
+                                                .getDepartmentEmployeeInfoByDepartmentEid(departmentEid)));
+        }
 
-        CommonResponse response = responses.getOrDefault(updatedResult, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
-                CommonResponse.COMMON_ERROR_MESSAGE, null));
+        @PutMapping("/employee/{id}")
+        public ResponseEntity<CommonResponse> updateDepartmentEmployeeById(@PathVariable("id") Long departmentEid,
+                        @RequestBody DepartmentEmployeeDTO departmentEmployeeDTO) {
+                departmentEmployeeService.updateDepartmentEmployeeInfoById(departmentEid, departmentEmployeeDTO);
 
-        log.info("{} {} end. departmentId={}, Status={}", CLASS_NAME, functionName, departmentId, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
+                return ResponseEntity.status(OK)
+                                .body(new CommonResponse(OK.value(), "Department employee info updated success",
+                                                null));
+        }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<CommonResponse> deleteDepartmentInfoById(@PathVariable("id") Long departmentId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentId={}", CLASS_NAME, functionName, departmentId);
+        @DeleteMapping("/employee/{id}")
+        public ResponseEntity<CommonResponse> deleteDepartmentEmployeeById(@PathVariable("id") Long departmentEid) {
+                departmentEmployeeService.deleteDepartmentEmployeeInfoById(departmentEid);
 
-        int deletedResult = departmentService.deleteDepartmentInfoById(departmentId);
+                return ResponseEntity.status(OK)
+                                .body(new CommonResponse(OK.value(), "Department employee info delete success.", null));
+        }
 
-        Map<Integer, CommonResponse> responses = Map.ofEntries(
-                Map.entry(1, new CommonResponse(OK.value(), "Department info delete success.", null)),
-                Map.entry(0, new CommonResponse(BAD_REQUEST.value(), "Department info delete failed.", null)),
-                Map.entry(-1, new CommonResponse(NOT_FOUND.value(), "Department info not found", null)),
-                Map.entry(-2, new CommonResponse(BAD_REQUEST.value(), "Department info is in used, not allow to delete", null))
-        );
+        @PostMapping("/unit")
+        public ResponseEntity<CommonResponse> createDepartmentFacilityUnit(
+                        @RequestBody DepartmentFacilityDTO departmentFacilityDTO) {
+                departmentFacilityService.createDepartmentFacilityUnit(departmentFacilityDTO);
 
-        CommonResponse response = responses.getOrDefault(deletedResult, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
-                CommonResponse.COMMON_ERROR_MESSAGE, null));
+                return ResponseEntity.status(OK).body(new CommonResponse(OK.value(),
+                                "Department facility unit info inserted success", null));
+        }
 
-        log.info("{} {} end. departmentId={}, Status={}", CLASS_NAME, functionName, departmentId, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
+        @GetMapping("/unit/details")
+        public ResponseEntity<CommonResponse> getAllDepartmentDetailsByFacilityId(
+                        @RequestParam("facility-id") Long facilityId) {
 
-    @PostMapping("/employee")
-    public ResponseEntity<CommonResponse> createDepartmentEmployee(@RequestBody DepartmentEmployeeDTO departmentEmployeeDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", CLASS_NAME, functionName);
+                return ResponseEntity.status(OK)
+                                .body(new CommonResponse(OK.value(), "Success retrieve department details info",
+                                                departmentFacilityService
+                                                                .getAllDepartmentDetailsByFacilityId(facilityId)));
+        }
 
-        int result = departmentEmployeeService.createDepartmentEmployeeInfo(departmentEmployeeDTO);
+        @DeleteMapping("/unit/{id}")
+        public ResponseEntity<CommonResponse> deleteDepartmentFacilityUnitDetailByFUId(
+                        @PathVariable("id") Long departmentFUId) {
+                departmentFacilityService.deleteDepartmentFacilityUnitDetailByDepartmentFUId(departmentFUId);
 
-        Map<Integer, CommonResponse> responses = Map.ofEntries(
-                Map.entry(1, new CommonResponse(OK.value(), "Department employee info inserted success", null)),
-                Map.entry(0, new CommonResponse(BAD_REQUEST.value(), "Department employee info inserted failed", null)),
-                Map.entry(-1, new CommonResponse(INTERNAL_SERVER_ERROR.value(), "API exception encountered. Please check backend log for status", null)),
-                Map.entry(-2, new CommonResponse(BAD_REQUEST.value(), "Department employee info exist", null))
-        );
-
-        CommonResponse response = responses.getOrDefault(result, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
-                CommonResponse.COMMON_ERROR_MESSAGE, null));
-
-        log.info("{} {} end. Response={}", CLASS_NAME, functionName, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
-
-    @GetMapping("/employee")
-    public ResponseEntity<CommonResponse> getAllDepartmentEmployeesByOffsetAndLimit(
-            @RequestParam(required = false, defaultValue = "0") Integer offset,
-            @RequestParam(required = false, defaultValue = "5") Integer limit) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. Request param: offset={}, limit={}", CLASS_NAME, functionName, offset, limit);
-
-        List<DepartmentEmployeeDetailDTO> departmentEmployeeList = departmentEmployeeService.getAllDepartmentEmployeeInfoByOffsetLimit(offset, limit);
-
-        CommonResponse response = departmentEmployeeList.isEmpty() ?
-                new CommonResponse(BAD_REQUEST.value(), "Error when retrieving the department employee info.", null) :
-                new CommonResponse(OK.value(), "Success retrieve department employee info", departmentEmployeeList);
-
-        log.info("{} {} end. Response={}", CLASS_NAME, functionName, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
-
-    @GetMapping("/employee/{id}")
-    public ResponseEntity<CommonResponse> getDepartmentEmployeeById(@PathVariable("id") Long departmentEid) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentEid={}.", CLASS_NAME, functionName, departmentEid);
-
-        Optional<DepartmentEmployeeDetailDTO> departmentEmployeeDetailDTO = departmentEmployeeService.getDepartmentEmployeeInfoByDepartmentEid(departmentEid);
-
-        CommonResponse response = departmentEmployeeDetailDTO.map(departmentInfoDTO ->
-                        new CommonResponse(OK.value(), "Department employee info retrieve success.", departmentEmployeeDetailDTO))
-                .orElseGet(() -> new CommonResponse(NOT_FOUND.value(), "Department employee info not found.", null));
-
-        log.info("{} {} end. Status={}", CLASS_NAME, functionName, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
-
-    @PutMapping("/employee/{id}")
-    public ResponseEntity<CommonResponse> updateDepartmentEmployeeById(@PathVariable("id") Long departmentEid, @RequestBody DepartmentEmployeeDTO departmentEmployeeDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentEid={}", CLASS_NAME, functionName, departmentEid);
-        int updatedResult = departmentEmployeeService.updateDepartmentEmployeeInfoById(departmentEid, departmentEmployeeDTO);
-
-        Map<Integer, CommonResponse> responses = Map.ofEntries(
-                Map.entry(1, new CommonResponse(OK.value(), "Department employee info updated success", null)),
-                Map.entry(0, new CommonResponse(BAD_REQUEST.value(), "Department employee info updated failed", null)),
-                Map.entry(-1, new CommonResponse(INTERNAL_SERVER_ERROR.value(), "API exception encountered. Please check backend log for status", null)),
-                Map.entry(-2, new CommonResponse(NOT_FOUND.value(), "Department employee info not found", null)),
-                Map.entry(-3, new CommonResponse(BAD_REQUEST.value(), "Department info duplicated", null))
-        );
-
-        CommonResponse response = responses.getOrDefault(updatedResult, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
-                CommonResponse.COMMON_ERROR_MESSAGE, null));
-
-        log.info("{} {} end. departmentEid={}, Status={}", CLASS_NAME, functionName, departmentEid, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
-
-    @DeleteMapping("/employee/{id}")
-    public ResponseEntity<CommonResponse> deleteDepartmentEmployeeById(@PathVariable("id") Long departmentEid) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentEid={}", CLASS_NAME, functionName, departmentEid);
-
-        int deletedResult = departmentEmployeeService.deleteDepartmentEmployeeInfoById(departmentEid);
-
-        Map<Integer, CommonResponse> responses = Map.ofEntries(
-                Map.entry(1, new CommonResponse(OK.value(), "Department employee info delete success.", null)),
-                Map.entry(0, new CommonResponse(BAD_REQUEST.value(), "Department employee info delete failed.", null)),
-                Map.entry(-1, new CommonResponse(NOT_FOUND.value(), "Department employee info not found", null))
-        );
-
-        CommonResponse response = responses.getOrDefault(deletedResult, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
-                CommonResponse.COMMON_ERROR_MESSAGE, null));
-
-        log.info("{} {} end. departmentEid={}, Status={}", CLASS_NAME, functionName, departmentEid, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
-
-    @PostMapping("/unit")
-    public ResponseEntity<CommonResponse> createDepartmentFacilityUnit(@RequestBody DepartmentFacilityDTO departmentFacilityDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", CLASS_NAME, functionName);
-
-        int result = departmentFacilityService.createDepartmentFacilityUnit(departmentFacilityDTO);
-
-        Map<Integer, CommonResponse> responses = Map.ofEntries(
-                Map.entry(1, new CommonResponse(OK.value(), "Department facility unit info inserted success", null)),
-                Map.entry(0, new CommonResponse(BAD_REQUEST.value(), "Department facility unit info inserted failed", null)),
-                Map.entry(-1, new CommonResponse(BAD_REQUEST.value(), "Department/Facility info not exist", null)),
-                Map.entry(-2, new CommonResponse(BAD_REQUEST.value(), "Company facility unit info exist", null))
-        );
-
-        CommonResponse response = responses.getOrDefault(result, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
-                CommonResponse.COMMON_ERROR_MESSAGE, null));
-
-        log.info("{} {} end. Response={}", CLASS_NAME, functionName, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
-
-    @GetMapping("/unit/details")
-    public ResponseEntity<CommonResponse> getAllDepartmentDetailsByFacilityId(@RequestParam("facility-id") Long facilityId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", CLASS_NAME, functionName);
-
-        List<DepartmentFacilityDetailDTO> departmentFacilityDetailList = departmentFacilityService.getAllDepartmentDetailsByFacilityId(facilityId);
-
-        CommonResponse response = departmentFacilityDetailList.isEmpty() ?
-                new CommonResponse(BAD_REQUEST.value(), "Error when retrieving the department details info.", null) :
-                new CommonResponse(OK.value(), "Success retrieve department details info", departmentFacilityDetailList);
-
-        log.info("{} {} end. Response={}", CLASS_NAME, functionName, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
-
-    @DeleteMapping("/unit/{id}")
-    public ResponseEntity<CommonResponse> deleteDepartmentFacilityUnitDetailByFUId(@PathVariable("id") Long departmentFUId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentFUId={}", CLASS_NAME, functionName, departmentFUId);
-
-        boolean deletedResult = departmentFacilityService.deleteDepartmentFacilityUnitDetailByDepartmentFUId(departmentFUId);
-
-        Map<Boolean, CommonResponse> responses = Map.ofEntries(
-                Map.entry(true, new CommonResponse(OK.value(), "Department facility unit info delete success.", null)),
-                Map.entry(false, new CommonResponse(BAD_REQUEST.value(), "Department facility unit info delete failed.", null))
-        );
-
-        CommonResponse response = responses.getOrDefault(deletedResult, new CommonResponse(INTERNAL_SERVER_ERROR.value(),
-                CommonResponse.COMMON_ERROR_MESSAGE, null));
-
-        log.info("{} {} end. departmentFUId={}, Status={}", CLASS_NAME, functionName, departmentFUId, response.statusCode());
-        return ResponseEntity.status(response.statusCode()).body(response);
-    }
+                return ResponseEntity.status(OK).body(new CommonResponse(OK.value(),
+                                "Department facility unit info delete success.", null));
+        }
 }

@@ -30,7 +30,7 @@ public class EmployeePromotionController {
 
     @PostMapping
     public ResponseEntity<CommonResponse> createPromotionDetail(@RequestBody EmployeePromotionDTO employeePromotionDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "createPromotionDetail";
         log.info("{} {} start.", CLASS_NAME, functionName);
 
         int result = employeePromotionService.createPromotionDetail(employeePromotionDTO);
@@ -53,7 +53,7 @@ public class EmployeePromotionController {
             @RequestParam(value = "employeeId", required = false) Long employeeId,
             @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
             @RequestParam(value = "limit", required = false, defaultValue = "5") Integer limit) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "getAllPromotionDetailByOffsetAndLimit";
         log.info("{} {} start. Request param: employeeId={} offset={}, limit={}", CLASS_NAME, functionName, employeeId, offset, limit);
 
         List<EmployeePromotionDetailDTO> promotionList = employeePromotionService.getAllPromotionsByOffsetAndLimitOrEmployeeId(employeeId, offset, limit);
@@ -68,7 +68,7 @@ public class EmployeePromotionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CommonResponse> getPromotionDetailByPromotionId(@PathVariable("id") Long promotionId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "getPromotionDetailByPromotionId";
         log.info("{} {} start. promotionId={}.", CLASS_NAME, functionName, promotionId);
 
         Optional<EmployeePromotionDetailDTO> promotionInfo = employeePromotionService.getPromotionDetailById(promotionId);
@@ -84,7 +84,7 @@ public class EmployeePromotionController {
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponse> updatePromotionDetailByPromotionId(@PathVariable("id") Long promotionId,
                                                                              @RequestBody EmployeePromotionDTO employeePromotionDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "updatePromotionDetailByPromotionId";
         log.info("{} {} start. promotionId={}", CLASS_NAME, functionName, promotionId);
 
         int updatedResult = employeePromotionService.updatePromotionDetailById(promotionId, employeePromotionDTO);
@@ -105,7 +105,7 @@ public class EmployeePromotionController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponse> deletePromotionDetailByPromotionId(@PathVariable("id") Long promotionId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "deletePromotionDetailByPromotionId";
         log.info("{} {} start. promotionId={}", CLASS_NAME, functionName, promotionId);
 
         int deletedResult = employeePromotionService.deletePromotionDetailById(promotionId);

@@ -3,24 +3,22 @@ package com.company.payroll.employee.model;
 import com.company.payroll.employee.constant.EmploymentStatus;
 import com.company.payroll.employee.constant.Gender;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "employee")
 public class Employee {
     @Id
     @Column(name = "employee_id")
-    private long employeeId;
+    private Long employeeId;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -76,8 +74,8 @@ public class Employee {
     private Long managerId;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 }

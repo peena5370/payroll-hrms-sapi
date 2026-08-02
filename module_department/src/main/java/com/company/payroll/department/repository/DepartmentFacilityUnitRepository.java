@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface DepartmentFacilityUnitRepository extends JpaRepository<DepartmentFacilityUnit, Long> {
 
+    boolean existsByDepartmentIdAndFacilityId(Long departmentId, Long facilityId);
+
     @Query("SELECT dfu FROM DepartmentFacilityUnit dfu WHERE dfu.departmentId = :departmentId")
     List<DepartmentFacilityUnit> getAllByDepartmentId(@Param("departmentId") Long departmentId);
 

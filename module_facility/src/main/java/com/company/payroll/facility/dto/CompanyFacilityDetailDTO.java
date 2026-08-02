@@ -1,10 +1,10 @@
 package com.company.payroll.facility.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record CompanyFacilityDetailDTO(
         Long facilityId,
-        LocalDateTime createdAt,
+        Instant createdAt,
         CompanyFacilityDTO detail
 ) {
 }

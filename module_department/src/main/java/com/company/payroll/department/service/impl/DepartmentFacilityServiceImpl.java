@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.company.payroll.common.service.FacilityCommonService;
 import com.company.payroll.department.dto.DepartmentDTO;
@@ -20,12 +20,14 @@ import com.company.payroll.department.repository.DepartmentEmployeeRepository;
 import com.company.payroll.department.repository.DepartmentFacilityUnitRepository;
 import com.company.payroll.department.repository.DepartmentRepository;
 import com.company.payroll.department.service.DepartmentFacilityService;
+import com.company.payroll.exception.classes.BadRequestException;
 import com.company.payroll.util.util.SnowFlakeIdGenerator;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class DepartmentFacilityServiceImpl implements DepartmentFacilityService {
     public static final String CLASS_NAME = "[DepartmentFacilityServiceImpl]";
     private final SnowFlakeIdGenerator snowFlakeIdGenerator;
@@ -35,10 +37,10 @@ public class DepartmentFacilityServiceImpl implements DepartmentFacilityService 
     private final FacilityCommonService facilityCommonService;
 
     public DepartmentFacilityServiceImpl(SnowFlakeIdGenerator snowFlakeIdGenerator,
-                                         DepartmentFacilityUnitRepository departmentFacilityUnitRepository,
-                                         DepartmentRepository departmentRepository,
-                                         DepartmentEmployeeRepository departmentEmployeeRepository,
-                                         FacilityCommonService facilityCommonService) {
+            DepartmentFacilityUnitRepository departmentFacilityUnitRepository,
+            DepartmentRepository departmentRepository,
+            DepartmentEmployeeRepository departmentEmployeeRepository,
+            FacilityCommonService facilityCommonService) {
         this.snowFlakeIdGenerator = snowFlakeIdGenerator;
         this.departmentFacilityUnitRepository = departmentFacilityUnitRepository;
         this.departmentRepository = departmentRepository;
@@ -47,83 +49,46 @@ public class DepartmentFacilityServiceImpl implements DepartmentFacilityService 
     }
 
     @Override
-    public int createDepartmentFacilityUnit(DepartmentFacilityDTO departmentFacilityDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", CLASS_NAME, functionName);
+    @Transactional(rollbackFor = Exception.class)
+    public void createDepartmentFacilityUnit(DepartmentFacilityDTO departmentFacilityDTO) {
+        departmentRepository.findById(departmentFacilityDTO.departmentId())
+            .orElseThrow(() -> new BadRequestException("Department with departmentId=" + departmentFacilityDTO.departmentId() + " not exist."));
 
-        int status = 0;
-
-        Optional<Department> department = departmentRepository.findById(departmentFacilityDTO.departmentId());
-        boolean isFacilityExist = facilityCommonService.isCompanyFacilityExist(departmentFacilityDTO.facilityId());
-        Optional<DepartmentFacilityUnit> existDepartmentFacilityUnit = departmentFacilityUnitRepository.getByDepartmentIdAndFacilityId(departmentFacilityDTO.departmentId(),
-                departmentFacilityDTO.facilityId());
-
-        if((isFacilityExist) && (department.isPresent()) && (existDepartmentFacilityUnit.isEmpty())) {
-            DepartmentFacilityUnit departmentFacilityUnit = new DepartmentFacilityUnit(
-                    snowFlakeIdGenerator.nextId(),
-                    departmentFacilityDTO.departmentId(),
-                    departmentFacilityDTO.facilityId());
-
-            departmentFacilityUnitRepository.saveAndFlush(departmentFacilityUnit);
-
-            status = 1;
-        } else if((department.isEmpty()) || (!isFacilityExist)) {
-            String columnName = "";
-            String columnId = "";
-            if(department.isEmpty()) {
-                columnName = "departmentId";
-                columnId = String.valueOf(departmentFacilityDTO.departmentId());
-            }
-
-            if(!isFacilityExist) {
-                columnName = "facilityId";
-                columnId = String.valueOf(departmentFacilityDTO.facilityId());
-            }
-
-            log.info("{} {} company department facility info with {}={} not exist.", CLASS_NAME, functionName, columnName, columnId);
-            status = -1;
-        } else {
-            log.info("{} {} company department facility unit data exist.", CLASS_NAME, functionName);
-            status = -2;
+        if(!facilityCommonService.isCompanyFacilityExist(departmentFacilityDTO.facilityId())) {
+            throw new BadRequestException("Facility with facilityId=" + departmentFacilityDTO.facilityId() + " not exist.");
         }
 
-        log.info("{} {} end. Result={}", CLASS_NAME, functionName, status);
-        return status;
+        if (departmentFacilityUnitRepository.existsByDepartmentIdAndFacilityId(departmentFacilityDTO.departmentId(), departmentFacilityDTO.facilityId())) {
+            throw new BadRequestException("Department facility unit with departmentId=" + departmentFacilityDTO.departmentId() 
+            + " and facilityId=" + departmentFacilityDTO.facilityId() + " already exist.");
+        }
+
+            DepartmentFacilityUnit departmentFacilityUnit = new DepartmentFacilityUnit();
+            departmentFacilityUnit.setDepartmentFUId(snowFlakeIdGenerator.nextId());
+            departmentFacilityUnit.setDepartmentId(departmentFacilityDTO.departmentId());
+            departmentFacilityUnit.setFacilityId(departmentFacilityDTO.facilityId());
+
+            departmentFacilityUnitRepository.save(departmentFacilityUnit);
     }
 
     @Override
-    public boolean deleteDepartmentFacilityUnitDetailByDepartmentFUId(long departmentFUId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. departmentFUId={}", CLASS_NAME, functionName, departmentFUId);
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteDepartmentFacilityUnitDetailByDepartmentFUId(long departmentFUId) {
+        departmentFacilityUnitRepository.findById(departmentFUId)
+                .orElseThrow(() -> new BadRequestException("Department facility unit with departmentFUId=" + departmentFUId + " not exist."));
 
-        boolean status = false;
-
-        Optional<DepartmentFacilityUnit> departmentFacilityUnit = departmentFacilityUnitRepository.findById(departmentFUId);
-
-        if(departmentFacilityUnit.isEmpty()) {
-            log.info("{} {} for departmentFUId={} not exist.", CLASS_NAME, functionName, departmentFUId);
-        } else {
-            departmentFacilityUnitRepository.delete(departmentFacilityUnit.get());
-            status = true;
-        }
-
-        log.info("{} {} end. Result={}", CLASS_NAME, functionName, status);
-        return status;
+        departmentFacilityUnitRepository.deleteById(departmentFUId);
     }
 
     @Override
     public List<DepartmentFacilityDetailDTO> getAllDepartmentDetailsByFacilityId(long facilityId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
-
         List<DepartmentFacilityDetailDTO> result = new ArrayList<>();
 
-        boolean isFacilityExist = facilityCommonService.isCompanyFacilityExist(facilityId);
+        if (facilityCommonService.isCompanyFacilityExist(facilityId)) {
+            List<DepartmentFacilityUnit> departmentFacilityUnits = departmentFacilityUnitRepository
+                    .getAllByFacilityId(facilityId);
 
-        if(isFacilityExist) {
-            List<DepartmentFacilityUnit> departmentFacilityUnits = departmentFacilityUnitRepository.getAllByFacilityId(facilityId);
-
-            if(!departmentFacilityUnits.isEmpty()) {
+            if (!departmentFacilityUnits.isEmpty()) {
                 List<Long> departmentIds = departmentFacilityUnits.stream()
                         .map(DepartmentFacilityUnit::getDepartmentId)
                         .toList();
@@ -133,11 +98,12 @@ public class DepartmentFacilityServiceImpl implements DepartmentFacilityService 
                         .toList();
 
                 List<DepartmentEmployee> departmentEmployees = departmentEmployeeRepository
-                        .getAllByDepartmentIdsByDepartmentFacilityUnitIdsAndIsPrimaryAndIsManager(departmentIds, departmentFUIds, true, true);
+                        .getAllByDepartmentIdsByDepartmentFacilityUnitIdsAndIsPrimaryAndIsManager(departmentIds,
+                                departmentFUIds, true, true);
 
                 List<Department> departmentInfos = departmentRepository.getAllByDepartmentIds(departmentIds);
 
-                if(!departmentInfos.isEmpty()) {
+                if (!departmentInfos.isEmpty()) {
                     Map<Long, DepartmentEmployee> departmentEmployeeMap = departmentEmployees.stream()
                             .collect(Collectors.toMap(DepartmentEmployee::getDepartmentId,
                                     employeeInfo -> employeeInfo));
@@ -145,8 +111,7 @@ public class DepartmentFacilityServiceImpl implements DepartmentFacilityService 
                     Map<Long, Department> departmentInfoMap = departmentInfos.stream()
                             .collect(Collectors.toMap(
                                     Department::getDepartmentId,
-                                    info -> info
-                            ));
+                                    info -> info));
 
                     List<DepartmentFacilityDetailDTO> finalResult = departmentFacilityUnits.stream()
                             .map(unit -> {
@@ -169,10 +134,10 @@ public class DepartmentFacilityServiceImpl implements DepartmentFacilityService 
                                         unit.getDepartmentFUId(),
                                         unit.getDepartmentFUId(),
                                         unit.getDepartmentId(),
-                                        departmentEmployeeMap.get(dept.getDepartmentId()) != null ?
-                                        departmentEmployeeMap.get(dept.getDepartmentId()).getEmployeeId() : null,
-                                        detail
-                                );
+                                        departmentEmployeeMap.get(dept.getDepartmentId()) != null
+                                                ? departmentEmployeeMap.get(dept.getDepartmentId()).getEmployeeId()
+                                                : null,
+                                        detail);
                             })
                             .filter(Objects::nonNull)
                             .toList();
@@ -180,11 +145,8 @@ public class DepartmentFacilityServiceImpl implements DepartmentFacilityService 
                     result.addAll(finalResult);
                 }
             }
-        } else {
-            log.info("{} {} company facility with facilityId={} not exist.", CLASS_NAME, functionName, facilityId);
         }
 
-        log.info("{} {} end. facilityId={}, size={}", CLASS_NAME, functionName, facilityId, result.size());
         return result;
     }
 }

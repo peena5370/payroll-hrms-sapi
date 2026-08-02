@@ -6,9 +6,9 @@ import com.company.payroll.department.dto.DepartmentFacilityDTO;
 import java.util.List;
 
 public interface DepartmentFacilityService {
-    int createDepartmentFacilityUnit(DepartmentFacilityDTO departmentFacilityDTO);
+    void createDepartmentFacilityUnit(DepartmentFacilityDTO departmentFacilityDTO);
 
-    boolean deleteDepartmentFacilityUnitDetailByDepartmentFUId(long departmentFUId);
+    void deleteDepartmentFacilityUnitDetailByDepartmentFUId(long departmentFUId);
 
     List<DepartmentFacilityDetailDTO> getAllDepartmentDetailsByFacilityId(long facilityId);
 }

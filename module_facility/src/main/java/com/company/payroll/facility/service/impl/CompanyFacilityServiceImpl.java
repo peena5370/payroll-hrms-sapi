@@ -1,6 +1,6 @@
 package com.company.payroll.facility.service.impl;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +38,7 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
 
     @Override
     public int createCompanyFacilityDetail(CompanyFacilityDTO companyFacilityDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "createCompanyFacilityDetail";
         log.info("{} {} start.", CLASS_NAME, functionName);
 
         int status = 0;
@@ -60,7 +60,7 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
                 companyFacility.setCountry(companyFacilityDTO.country());
                 companyFacility.setContactPersonId(companyFacilityDTO.contactPersonId());
                 companyFacility.setFacilityPhoneNumber(companyFacilityDTO.facilityPhoneNumber());
-                companyFacility.setCreatedAt(LocalDateTime.now());
+                companyFacility.setCreatedAt(Instant.now());
 
                 companyFacilityRepository.saveAndFlush(companyFacility);
 
@@ -78,7 +78,7 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
 
     @Override
     public List<CompanyFacilityDetailDTO> getAllCompanyFacilityDetailByOffsetAndLimit(int offset, int limit) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "getAllCompanyFacilityDetailByOffsetAndLimit";
         log.info("{} {} start. offset={}, limit={}", CLASS_NAME, functionName, offset, limit);
 
         List<CompanyFacilityDetailDTO> facilityDetailDTOList = new ArrayList<>();
@@ -117,7 +117,7 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
 
     @Override
     public Optional<CompanyFacilityDetailDTO> getCompanyFacilityDetailById(long facilityId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "getCompanyFacilityDetailById";
         log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         Optional<CompanyFacility> facility = companyFacilityRepository.findById(facilityId);
@@ -152,7 +152,7 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
 
     @Override
     public int updateCompanyFacilityDetailById(long facilityId, CompanyFacilityDTO companyFacilityDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "updateCompanyFacilityDetailById";
         log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         int status = 0;
@@ -180,7 +180,7 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
                     updateFacility.setCountry(companyFacilityDTO.country());
                     updateFacility.setContactPersonId(companyFacilityDTO.contactPersonId());
                     updateFacility.setFacilityPhoneNumber(companyFacilityDTO.facilityPhoneNumber());
-                    updateFacility.setUpdatedAt(LocalDateTime.now());
+                    updateFacility.setUpdatedAt(Instant.now());
 
                     companyFacilityRepository.saveAndFlush(updateFacility);
 
@@ -199,7 +199,7 @@ public class CompanyFacilityServiceImpl implements CompanyFacilityService {
 
     @Override
     public int deleteCompanyFacilityDetailById(long facilityId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "deleteCompanyFacilityDetailById";
         log.info("{} {} start. facilityId={}", CLASS_NAME, functionName, facilityId);
 
         int status = 0;

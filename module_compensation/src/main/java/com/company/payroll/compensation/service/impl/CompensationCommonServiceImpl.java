@@ -27,7 +27,7 @@ public class CompensationCommonServiceImpl implements CompensationCommonService 
     @Override
     public LoanEligibleStatus getEmployeeCompensationLoanEligibility(long employeeId, BigDecimal loanAmount,
             String repaymentTerm) {
-        final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        final String functionName = "getEmployeeCompensationLoanEligibility";
         log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
 
         LoanEligibleStatus finalResult = LoanEligibleStatus.NOT_ELIGIBLE;

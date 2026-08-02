@@ -1,8 +1,7 @@
 package com.company.payroll.security.filter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 import jakarta.servlet.http.HttpFilter;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,7 @@ public class ServletSecurityFilter extends HttpFilter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("{} initialized at={} ", CLASS_NAME, ZonedDateTime.now());
+        log.info("{} initialized at={} ", CLASS_NAME, Instant.now());
         log.info("{} filter name={} ", CLASS_NAME, filterConfig.getFilterName());
         log.info("{} servlet context={}", CLASS_NAME, filterConfig.getServletContext().getContextPath());
 
@@ -31,14 +30,13 @@ public class ServletSecurityFilter extends HttpFilter {
 	@Override
 	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} Remote address: [{}] accessed at: {}", CLASS_NAME, functionName, request.getRemoteAddr(), LocalDateTime.now());
+        log.info("{} {} Remote address: [{}] accessed at: {}", CLASS_NAME, "doFilter", request.getRemoteAddr(), Instant.now());
 
 		super.doFilter(request, response, chain);
 	}
 	
 	@Override
 	public void destroy() {
-        log.info("{} destroyed at: {}", CLASS_NAME, LocalDateTime.now());
+        log.info("{} destroyed at: {}", CLASS_NAME, Instant.now());
 	}
 }

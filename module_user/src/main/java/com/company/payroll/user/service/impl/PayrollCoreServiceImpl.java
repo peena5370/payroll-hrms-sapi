@@ -21,8 +21,7 @@ public class PayrollCoreServiceImpl implements PayrollCoreService {
     }
 
     public JwkUriResponse getJwkUri() {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} started.", CLASS_NAME, functionName);
+        final String functionName = "getJwkUri";
         JwkUriResponse response = null;
         try {
             response = client.post()
@@ -45,7 +44,6 @@ public class PayrollCoreServiceImpl implements PayrollCoreService {
             log.error("{} {} An unexpected error occurred={}", CLASS_NAME, functionName, e.getMessage());
         }
 
-        log.info("{} {} end.", CLASS_NAME, functionName);
         return response;
     }
 }
