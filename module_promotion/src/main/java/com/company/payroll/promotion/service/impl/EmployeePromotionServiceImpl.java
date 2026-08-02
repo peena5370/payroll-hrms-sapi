@@ -11,7 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,27 +32,26 @@ public class EmployeePromotionServiceImpl implements EmployeePromotionService {
 
     @Override
     public int createPromotionDetail(EmployeePromotionDTO employeePromotionDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "createPromotionDetail";
         log.info("{} {} start.", CLASS_NAME, functionName);
 
         int status = 0;
         try {
-            EmployeePromotion promotion = new EmployeePromotion(
-                    snowFlakeIdGenerator.nextId(),
-                    employeePromotionDTO.employeeId(),
-                    employeePromotionDTO.oldJobTitle(),
-                    employeePromotionDTO.newJobTitle(),
-                    employeePromotionDTO.oldDepartmentId(),
-                    employeePromotionDTO.newDepartmentId(),
-                    employeePromotionDTO.promoteDate(),
-                    employeePromotionDTO.incrementAmount(),
-                    employeePromotionDTO.reason(),
-                    employeePromotionDTO.approverId(),
-                    LocalDateTime.now(),
-                    null
-            );
+            EmployeePromotion promotion = new EmployeePromotion();
+            promotion.setPromotionId(snowFlakeIdGenerator.nextId());
+            promotion.setEmployeeId(employeePromotionDTO.employeeId());
+            promotion.setOldJobTitle(employeePromotionDTO.oldJobTitle());
+            promotion.setNewJobTitle(employeePromotionDTO.newJobTitle());
+            promotion.setOldDepartmentId(employeePromotionDTO.oldDepartmentId());
+            promotion.setNewDepartmentId(employeePromotionDTO.newDepartmentId());
+            promotion.setPromotionDate(employeePromotionDTO.promoteDate());
+            promotion.setSalaryIncrementAmount(employeePromotionDTO.incrementAmount());
+            promotion.setPromotionReason(employeePromotionDTO.reason());
+            promotion.setApprovedById(employeePromotionDTO.approverId());
+            promotion.setCreatedAt(Instant.now());
+            promotion.setUpdatedAt(null);
 
-            employeePromotionRepository.saveAndFlush(promotion);
+            employeePromotionRepository.save(promotion);
 
             log.info("{} {} create success.", CLASS_NAME, functionName);
             status = 1;
@@ -67,7 +66,7 @@ public class EmployeePromotionServiceImpl implements EmployeePromotionService {
 
     @Override
     public List<EmployeePromotionDetailDTO> getAllPromotionsByOffsetAndLimitOrEmployeeId(Long employeeId, int offset, int limit) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "getAllPromotionsByOffsetAndLimitOrEmployeeId";
         log.info("{} {} start.", CLASS_NAME, functionName);
 
         List<EmployeePromotionDetailDTO> employeePromotionDetailDTOList = new ArrayList<>();
@@ -112,8 +111,7 @@ public class EmployeePromotionServiceImpl implements EmployeePromotionService {
 
     @Override
     public Optional<EmployeePromotionDetailDTO> getPromotionDetailById(long promotionId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-
+        final String functionName = "getPromotionDetailById";
         log.info("{} {} start. promotionId={}", CLASS_NAME, functionName, promotionId);
 
         Optional<EmployeePromotion> promotion = employeePromotionRepository.findById(promotionId);
@@ -148,7 +146,7 @@ public class EmployeePromotionServiceImpl implements EmployeePromotionService {
 
     @Override
     public int updatePromotionDetailById(long promotionId, EmployeePromotionDTO employeePromotionDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "updatePromotionDetailById";
         log.info("{} {} start. promotionId={}", CLASS_NAME, functionName, promotionId);
 
         int status = 0;
@@ -170,7 +168,7 @@ public class EmployeePromotionServiceImpl implements EmployeePromotionService {
                 updatePromotion.setSalaryIncrementAmount(employeePromotionDTO.incrementAmount());
                 updatePromotion.setPromotionReason(employeePromotionDTO.reason());
                 updatePromotion.setApprovedById(employeePromotionDTO.approverId());
-                updatePromotion.setUpdatedAt(LocalDateTime.now());
+                updatePromotion.setUpdatedAt(Instant.now());
 
                 employeePromotionRepository.saveAndFlush(updatePromotion);
 
@@ -188,7 +186,7 @@ public class EmployeePromotionServiceImpl implements EmployeePromotionService {
 
     @Override
     public int deletePromotionDetailById(long promotionId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "deletePromotionDetailById";
         log.info("{} {} start. promotionId={}", CLASS_NAME, functionName, promotionId);
 
         int status = 0;

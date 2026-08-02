@@ -8,6 +8,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+
+    boolean existsByIcNumber(String icNumber);
+    
     @Query("SELECT e.employeeId FROM Employee e WHERE e.icNumber = :icNumber")
     Optional<Long> findIdByIcNumber(@Param("icNumber") String icNumber);
 }

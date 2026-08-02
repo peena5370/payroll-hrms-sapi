@@ -1,10 +1,10 @@
 package com.company.payroll.resignation.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record EmployeeResignationDetailDTO(
         Long resignationId,
-        LocalDateTime createdAt,
+        Instant createdAt,
         EmployeeResignationDTO detail
 ) {
 }

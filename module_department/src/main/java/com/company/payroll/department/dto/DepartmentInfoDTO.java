@@ -1,9 +1,9 @@
 package com.company.payroll.department.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record DepartmentInfoDTO(
         Long departmentId,
-        LocalDateTime createdAt,
+        Instant createdAt,
         DepartmentDTO detail) {
 }

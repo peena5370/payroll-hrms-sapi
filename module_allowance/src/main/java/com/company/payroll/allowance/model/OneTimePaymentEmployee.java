@@ -1,8 +1,8 @@
 package com.company.payroll.allowance.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import com.company.payroll.allowance.constant.PaymentStatus;
 
@@ -12,34 +12,32 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "one_time_payment_employee")
 public class OneTimePaymentEmployee {
 
     @Id
     @Column(name = "payment_eid")
-    private long paymentEid;
+    private Long paymentEid;
 
     @Column(name = "employee_id", nullable = false)
-    private long employeeId;
+    private Long employeeId;
 
     @Column(name = "payment_type_id", nullable = false)
-    private long paymentTypeId;
+    private Long paymentTypeId;
 
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
 
     @Column(name = "approval_date")
-    private LocalDateTime approvalDate;
+    private Instant approvalDate;
 
     @Column(name = "scheduled_payment_date", nullable = false)
     private LocalDate schedulePaymentDate;
@@ -49,8 +47,8 @@ public class OneTimePaymentEmployee {
     private PaymentStatus paymentStatus;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 }

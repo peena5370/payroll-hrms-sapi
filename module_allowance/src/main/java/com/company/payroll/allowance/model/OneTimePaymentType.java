@@ -1,27 +1,25 @@
 package com.company.payroll.allowance.model;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "one_time_payment_type")
 public class OneTimePaymentType {
 
     @Id
     @Column(name = "payment_type_id")
-    private long paymentTypeId;
+    private Long paymentTypeId;
 
     @Column(name = "type_name", nullable = false)
     private String typeName;
@@ -30,11 +28,11 @@ public class OneTimePaymentType {
     private String description;
 
     @Column(name = "is_taxable", nullable = false)
-    private boolean is_taxable;
+    private Boolean taxable;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 }

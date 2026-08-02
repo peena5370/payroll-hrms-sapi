@@ -16,7 +16,6 @@ public class PayrollCoreConfig {
 
     private final PayrollCoreProperties properties;
 
-    @Autowired
     public PayrollCoreConfig(PayrollCoreProperties properties) {
         this.properties = properties;
     }

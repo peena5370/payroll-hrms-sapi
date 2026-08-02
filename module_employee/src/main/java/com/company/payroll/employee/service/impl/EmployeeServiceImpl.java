@@ -1,14 +1,14 @@
 package com.company.payroll.employee.service.impl;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.Transactional;
+// import org.springframework.transaction.support.TransactionTemplate;
 
 import com.company.payroll.common.service.DepartmentCommonService;
 import com.company.payroll.employee.dto.EmployeeBankDetailDTO;
@@ -22,6 +22,7 @@ import com.company.payroll.employee.repository.EmployeeBankDetailRepository;
 import com.company.payroll.employee.repository.EmployeeEmergencyContactRepository;
 import com.company.payroll.employee.repository.EmployeeRepository;
 import com.company.payroll.employee.service.EmployeeService;
+import com.company.payroll.exception.classes.BadRequestException;
 import com.company.payroll.exception.classes.ResourceNotFoundException;
 import com.company.payroll.util.util.SnowFlakeIdGenerator;
 
@@ -29,24 +30,23 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private static final String CLASS_NAME = "[EmployeeServiceImpl]";
-
-    private final TransactionTemplate transactionTemplate;
+    // private final TransactionTemplate transactionTemplate;
     private final SnowFlakeIdGenerator snowFlakeIdGenerator;
     private final EmployeeRepository employeeRepository;
     private final EmployeeBankDetailRepository employeeBankDetailRepository;
     private final EmployeeEmergencyContactRepository employeeEmergencyContactRepository;
     private final DepartmentCommonService departmentCommonService;
 
-    public EmployeeServiceImpl(TransactionTemplate transactionTemplate,
-                               SnowFlakeIdGenerator snowFlakeIdGenerator,
-                               EmployeeRepository employeeRepository,
-                               EmployeeBankDetailRepository employeeBankDetailRepository,
-                               EmployeeEmergencyContactRepository employeeEmergencyContactRepository,
-                               DepartmentCommonService departmentCommonService) {
-        this.transactionTemplate = transactionTemplate;
+    public EmployeeServiceImpl(/* TransactionTemplate transactionTemplate, */
+            SnowFlakeIdGenerator snowFlakeIdGenerator,
+            EmployeeRepository employeeRepository,
+            EmployeeBankDetailRepository employeeBankDetailRepository,
+            EmployeeEmergencyContactRepository employeeEmergencyContactRepository,
+            DepartmentCommonService departmentCommonService) {
+        // this.transactionTemplate = transactionTemplate;
         this.snowFlakeIdGenerator = snowFlakeIdGenerator;
         this.employeeRepository = employeeRepository;
         this.employeeBankDetailRepository = employeeBankDetailRepository;
@@ -55,94 +55,77 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public int createEmployeeInfo(EmployeeDTO employeeDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info("{} {} start.", CLASS_NAME, functionName);
+    @Transactional(rollbackFor = Exception.class)
+    public void createEmployeeInfo(EmployeeDTO employeeDTO) {
+        if (employeeRepository.existsByIcNumber(employeeDTO.icNumber())) {
+            throw new BadRequestException("Employee info with icNumber=" + employeeDTO.icNumber() + " already exist.");
+        }
 
-        Integer status = transactionTemplate.execute(transactionStatus -> {
-            try {
-                Optional<Long> existingEmployeeId = employeeRepository.findIdByIcNumber(employeeDTO.icNumber());
+        Employee newEmployee = new Employee();
+        newEmployee.setEmployeeId(snowFlakeIdGenerator.nextId());
+        newEmployee.setFirstName(employeeDTO.firstName());
+        newEmployee.setLastName(employeeDTO.lastName());
+        newEmployee.setDateOfBirth(employeeDTO.dateOfBirth());
+        newEmployee.setIcNumber(employeeDTO.icNumber());
+        newEmployee.setGender(employeeDTO.gender());
+        newEmployee.setEmail(employeeDTO.email());
+        newEmployee.setPhoneNumber(employeeDTO.phoneNumber());
+        newEmployee.setAddressLine1(employeeDTO.addressLine1());
+        newEmployee.setAddressLine2(employeeDTO.addressLine2());
+        newEmployee.setCity(employeeDTO.city());
+        newEmployee.setStateProvince(employeeDTO.state());
+        newEmployee.setPostalCode(employeeDTO.postalCode());
+        newEmployee.setCountry(employeeDTO.country());
+        newEmployee.setHireDate(employeeDTO.hireDate());
+        newEmployee.setEmploymentStatus(employeeDTO.employmentStatus());
+        newEmployee.setJobTitle(employeeDTO.jobTitle());
+        newEmployee.setManagerId(employeeDTO.managerId());
+        newEmployee.setCreatedAt(Instant.now());
+        newEmployee.setUpdatedAt(null);
 
-                if (existingEmployeeId.isPresent()) {
-                    log.info("{} {} employee info exist.", CLASS_NAME, functionName);
-                    transactionStatus.setRollbackOnly();
-                    return -2;
-                }
+        employeeRepository.save(newEmployee);
 
-                Employee newEmployee = new Employee(
-                        snowFlakeIdGenerator.nextId(),
-                        employeeDTO.firstName(),
-                        employeeDTO.lastName(),
-                        employeeDTO.dateOfBirth(),
-                        employeeDTO.icNumber(),
-                        employeeDTO.gender(),
-                        employeeDTO.email(),
-                        employeeDTO.phoneNumber(),
-                        employeeDTO.addressLine1(),
-                        employeeDTO.addressLine2(),
-                        employeeDTO.city(),
-                        employeeDTO.state(),
-                        employeeDTO.postalCode(),
-                        employeeDTO.country(),
-                        employeeDTO.hireDate(),
-                        employeeDTO.employmentStatus(),
-                        employeeDTO.jobTitle(),
-                        employeeDTO.managerId(),
-                        LocalDateTime.now(),
-                        null
-                );
+        Long employeeId = newEmployee.getEmployeeId();
 
-                Employee createdEmployee = employeeRepository.save(newEmployee);
-                long employeeId = createdEmployee.getEmployeeId();
+        if ((employeeDTO.bankDetails() != null) && (!employeeDTO.bankDetails().isEmpty())) {
+            List<EmployeeBankDetail> newBankDetails = employeeDTO.bankDetails().stream()
+                    .map(employeeBankDetailDTO -> {
+                        EmployeeBankDetail bankDetail = new EmployeeBankDetail();
+                        bankDetail.setBankDetailId(snowFlakeIdGenerator.nextId());
+                        bankDetail.setEmployeeId(employeeId);
+                        bankDetail.setBankName(employeeBankDetailDTO.bankName());
+                        bankDetail.setEncryptedAccountNumber(employeeBankDetailDTO.accountNumber());
+                        bankDetail.setBicCode(employeeBankDetailDTO.bicCode());
+                        bankDetail.setAccountType(employeeBankDetailDTO.accountType());
 
-                if ((employeeDTO.bankDetails() != null) && (!employeeDTO.bankDetails().isEmpty())) {
-                    List<EmployeeBankDetail> newBankDetails = employeeDTO.bankDetails().stream()
-                            .map(employeeBankDetailDTO -> new EmployeeBankDetail(
-                                    snowFlakeIdGenerator.nextId(),
-                                    employeeId,
-                                    employeeBankDetailDTO.bankName(),
-                                    employeeBankDetailDTO.accountNumber(),
-                                    employeeBankDetailDTO.bicCode(),
-                                    employeeBankDetailDTO.accountType()
-                            )).toList();
+                        return bankDetail;
+                    })
+                    .toList();
 
-                    employeeBankDetailRepository.saveAll(newBankDetails);
-                }
+            employeeBankDetailRepository.saveAll(newBankDetails);
+        }
 
-                if ((employeeDTO.emergencyContacts() != null) && (!employeeDTO.emergencyContacts().isEmpty())) {
-                    List<EmployeeEmergencyContact> newEmergencyContacts = employeeDTO.emergencyContacts().stream()
-                            .map(employeeEmergencyContactDTO -> new EmployeeEmergencyContact(
-                                    snowFlakeIdGenerator.nextId(),
-                                    employeeId,
-                                    employeeEmergencyContactDTO.contactPersonName(),
-                                    employeeEmergencyContactDTO.relationship(),
-                                    employeeEmergencyContactDTO.phoneNumber(),
-                                    employeeEmergencyContactDTO.email()
-                            )).toList();
+        if ((employeeDTO.emergencyContacts() != null) && (!employeeDTO.emergencyContacts().isEmpty())) {
+            List<EmployeeEmergencyContact> newEmergencyContacts = employeeDTO.emergencyContacts().stream()
+                    .map(employeeEmergencyContactDTO -> {
+                        EmployeeEmergencyContact emergencyContact = new EmployeeEmergencyContact();
+                        emergencyContact.setContactId(snowFlakeIdGenerator.nextId());
+                        emergencyContact.setEmployeeId(employeeId);
+                        emergencyContact.setContactName(employeeEmergencyContactDTO.contactPersonName());
+                        emergencyContact.setRelationship(employeeEmergencyContactDTO.relationship());
+                        emergencyContact.setPhoneNumber(employeeEmergencyContactDTO.phoneNumber());
+                        emergencyContact.setEmail(employeeEmergencyContactDTO.email());
 
-                    employeeEmergencyContactRepository.saveAll(newEmergencyContacts);
-                }
+                        return emergencyContact;
+                    })
+                    .toList();
 
-                return 1;
-            } catch (Exception e) {
-                log.error("{} {} exception occurred for transaction. Message={}", CLASS_NAME, functionName, e.getMessage());
-
-                transactionStatus.setRollbackOnly();
-                return -1;
-            }
-        });
-
-        int finalStatus = Optional.ofNullable(status).orElse(0);
-
-        log.info("{} {} end. Status={}", CLASS_NAME, functionName, finalStatus);
-        return finalStatus;
+            employeeEmergencyContactRepository.saveAll(newEmergencyContacts);
+        }
     }
 
     @Override
     public List<EmployeeInfoDTO> getAllEmployeesByOffsetAndLimit(int offset, int limit) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start.", CLASS_NAME, functionName);
-
         List<EmployeeInfoDTO> result = new ArrayList<>();
 
         Sort sort = Sort.by("employeeId").ascending();
@@ -162,11 +145,12 @@ public class EmployeeServiceImpl implements EmployeeService {
                                     employeeBankDetail.getBankName(),
                                     employeeBankDetail.getEncryptedAccountNumber(),
                                     employeeBankDetail.getBicCode(),
-                                    employeeBankDetail.getAccountType()
-                            )).toList();
+                                    employeeBankDetail.getAccountType()))
+                            .toList();
                 }
 
-                List<EmployeeEmergencyContact> emergencyContacts = employeeEmergencyContactRepository.getAllByEmployeeId(employeeId);
+                List<EmployeeEmergencyContact> emergencyContacts = employeeEmergencyContactRepository
+                        .getAllByEmployeeId(employeeId);
                 List<EmployeeEmergencyContactDTO> employeeEmergencyContactDTOS = new ArrayList<>();
                 if (emergencyContacts != null && !emergencyContacts.isEmpty()) {
                     employeeEmergencyContactDTOS = emergencyContacts.stream()
@@ -174,8 +158,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                                     employeeEmergencyContact.getContactName(),
                                     employeeEmergencyContact.getRelationship(),
                                     employeeEmergencyContact.getPhoneNumber(),
-                                    employeeEmergencyContact.getEmail()
-                            )).toList();
+                                    employeeEmergencyContact.getEmail()))
+                            .toList();
                 }
 
                 EmployeeDTO detail = new EmployeeDTO(
@@ -197,237 +181,191 @@ public class EmployeeServiceImpl implements EmployeeService {
                         employee.getJobTitle(),
                         employee.getManagerId(),
                         employeeBankDetailDTOS,
-                        employeeEmergencyContactDTOS
-                );
+                        employeeEmergencyContactDTOS);
 
                 EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO(
                         employeeId,
                         employee.getCreatedAt(),
-                        detail
-                );
+                        detail);
 
                 result.add(employeeInfoDTO);
             }
         }
 
-        log.info("{} {} end. Result size={}", CLASS_NAME, functionName, result.size());
         return result;
     }
 
     @Override
-    public Optional<EmployeeInfoDTO> getEmployeeInfoById(long employeeId) {
-        final String functionName = Thread.currentThread().getStackTrace()[2].getMethodName();
+    public EmployeeInfoDTO getEmployeeInfoById(long employeeId) {
+        Employee employee = this.employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Employee info with employeeId=" + employeeId + " not found."));
 
-        Optional<Employee> employee = this.employeeRepository.findById(employeeId);
+        long resultEmployeeId = employee.getEmployeeId();
 
-        if (employee.isPresent()) {
-            Employee result = employee.get();
-            long resultEmployeeId = result.getEmployeeId();
-
-            List<EmployeeBankDetail> bankDetails = employeeBankDetailRepository.getAllByEmployeeId(resultEmployeeId);
-            List<EmployeeBankDetailDTO> employeeBankDetailDTOS = new ArrayList<>();
-            if (bankDetails != null && !bankDetails.isEmpty()) {
-                employeeBankDetailDTOS = bankDetails.stream()
-                        .map(employeeBankDetail -> new EmployeeBankDetailDTO(
-                                employeeBankDetail.getBankName(),
-                                employeeBankDetail.getEncryptedAccountNumber(),
-                                employeeBankDetail.getBicCode(),
-                                employeeBankDetail.getAccountType()
-                        )).toList();
-            }
-
-            List<EmployeeEmergencyContact> emergencyContacts = employeeEmergencyContactRepository.getAllByEmployeeId(resultEmployeeId);
-            List<EmployeeEmergencyContactDTO> employeeEmergencyContactDTOS = new ArrayList<>();
-            if (emergencyContacts != null && !emergencyContacts.isEmpty()) {
-                employeeEmergencyContactDTOS = emergencyContacts.stream()
-                        .map(employeeEmergencyContact -> new EmployeeEmergencyContactDTO(
-                                employeeEmergencyContact.getContactName(),
-                                employeeEmergencyContact.getRelationship(),
-                                employeeEmergencyContact.getPhoneNumber(),
-                                employeeEmergencyContact.getEmail()
-                        )).toList();
-            }
-
-            EmployeeDTO detail = new EmployeeDTO(
-                    result.getFirstName(),
-                    result.getLastName(),
-                    result.getDateOfBirth(),
-                    result.getIcNumber(),
-                    result.getGender(),
-                    result.getEmail(),
-                    result.getPhoneNumber(),
-                    result.getAddressLine1(),
-                    result.getAddressLine2(),
-                    result.getCity(),
-                    result.getStateProvince(),
-                    result.getPostalCode(),
-                    result.getCountry(),
-                    result.getHireDate(),
-                    result.getEmploymentStatus(),
-                    result.getJobTitle(),
-                    result.getManagerId(),
-                    employeeBankDetailDTOS,
-                    employeeEmergencyContactDTOS
-            );
-
-            log.info("{} {} success for employeeId={}.", CLASS_NAME, functionName, employeeId);
-            return Optional.of(new EmployeeInfoDTO(
-                    resultEmployeeId,
-                    result.getCreatedAt(),
-                    detail
-            ));
+        List<EmployeeBankDetail> bankDetails = employeeBankDetailRepository.getAllByEmployeeId(resultEmployeeId);
+        List<EmployeeBankDetailDTO> employeeBankDetailDTOS = new ArrayList<>();
+        if (bankDetails != null && !bankDetails.isEmpty()) {
+            employeeBankDetailDTOS = bankDetails.stream()
+                    .map(employeeBankDetail -> new EmployeeBankDetailDTO(
+                            employeeBankDetail.getBankName(),
+                            employeeBankDetail.getEncryptedAccountNumber(),
+                            employeeBankDetail.getBicCode(),
+                            employeeBankDetail.getAccountType()))
+                    .toList();
         }
 
-        throw new ResourceNotFoundException("Employee info with employeeId=" + employeeId + " not exist.");
+        List<EmployeeEmergencyContact> emergencyContacts = employeeEmergencyContactRepository
+                .getAllByEmployeeId(resultEmployeeId);
+        List<EmployeeEmergencyContactDTO> employeeEmergencyContactDTOS = new ArrayList<>();
+        if (emergencyContacts != null && !emergencyContacts.isEmpty()) {
+            employeeEmergencyContactDTOS = emergencyContacts.stream()
+                    .map(employeeEmergencyContact -> new EmployeeEmergencyContactDTO(
+                            employeeEmergencyContact.getContactName(),
+                            employeeEmergencyContact.getRelationship(),
+                            employeeEmergencyContact.getPhoneNumber(),
+                            employeeEmergencyContact.getEmail()))
+                    .toList();
+        }
+
+        EmployeeDTO detail = new EmployeeDTO(
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getDateOfBirth(),
+                employee.getIcNumber(),
+                employee.getGender(),
+                employee.getEmail(),
+                employee.getPhoneNumber(),
+                employee.getAddressLine1(),
+                employee.getAddressLine2(),
+                employee.getCity(),
+                employee.getStateProvince(),
+                employee.getPostalCode(),
+                employee.getCountry(),
+                employee.getHireDate(),
+                employee.getEmploymentStatus(),
+                employee.getJobTitle(),
+                employee.getManagerId(),
+                employeeBankDetailDTOS,
+                employeeEmergencyContactDTOS);
+
+        return new EmployeeInfoDTO(
+                resultEmployeeId,
+                employee.getCreatedAt(),
+                detail);
     }
 
     @Override
-    public int updateEmployeeInfoById(long employeeId, EmployeeDTO employeeDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
+    @Transactional(rollbackFor = Exception.class)
+    public void updateEmployeeInfoById(long employeeId, EmployeeDTO employeeDTO) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Employee info with employeeId=" + employeeId + " not found."));
 
-        Integer status = transactionTemplate.execute(transactionStatus -> {
-            try {
-                Optional<Employee> employee = employeeRepository.findById(employeeId);
+        if (employee.getIcNumber() != null && !employee.getIcNumber().equals(employeeDTO.icNumber())
+                && employeeRepository.existsByIcNumber(employeeDTO.icNumber())) {
+            throw new BadRequestException("Employee info with icNumber=" + employeeDTO.icNumber() + " already exist.");
+        }
 
-                if (employee.isEmpty()) {
-                    log.info("{} {} not found for employeeId={}", CLASS_NAME, functionName, employeeId);
-                    transactionStatus.setRollbackOnly();
-                    return -2;
-                } else {
-                    Optional<Long> duplicateIcNumberEmployeeId = employeeRepository.findIdByIcNumber(employeeDTO.icNumber());
+        employee.setFirstName(employeeDTO.firstName());
+        employee.setLastName(employeeDTO.lastName());
+        employee.setDateOfBirth(employeeDTO.dateOfBirth());
+        employee.setIcNumber(employeeDTO.icNumber());
+        employee.setGender(employeeDTO.gender());
+        employee.setEmail(employeeDTO.email());
+        employee.setPhoneNumber(employeeDTO.phoneNumber());
+        employee.setAddressLine1(employeeDTO.addressLine1());
+        employee.setAddressLine2(employeeDTO.addressLine2());
+        employee.setCity(employeeDTO.city());
+        employee.setStateProvince(employeeDTO.state());
+        employee.setPostalCode(employeeDTO.postalCode());
+        employee.setCountry(employeeDTO.country());
+        employee.setHireDate(employeeDTO.hireDate());
+        employee.setEmploymentStatus(employeeDTO.employmentStatus());
+        employee.setJobTitle(employeeDTO.jobTitle());
+        employee.setManagerId(employeeDTO.managerId());
+        employee.setUpdatedAt(Instant.now());
 
-                    if ((duplicateIcNumberEmployeeId.isPresent()) && (employeeId != duplicateIcNumberEmployeeId.get())) {
-                        log.info("{} {} duplicated ic number for employeeId={} with other employee", CLASS_NAME, functionName, employeeId);
-                        transactionStatus.setRollbackOnly();
-                        return -3;
-                    } else {
-                        Employee updateEmployee = employee.get();
-                        updateEmployee.setFirstName(employeeDTO.firstName());
-                        updateEmployee.setLastName(employeeDTO.lastName());
-                        updateEmployee.setDateOfBirth(employeeDTO.dateOfBirth());
-                        updateEmployee.setIcNumber(employeeDTO.icNumber());
-                        updateEmployee.setGender(employeeDTO.gender());
-                        updateEmployee.setEmail(employeeDTO.email());
-                        updateEmployee.setPhoneNumber(employeeDTO.phoneNumber());
-                        updateEmployee.setAddressLine1(employeeDTO.addressLine1());
-                        updateEmployee.setAddressLine2(employeeDTO.addressLine2());
-                        updateEmployee.setCity(employeeDTO.city());
-                        updateEmployee.setStateProvince(employeeDTO.state());
-                        updateEmployee.setPostalCode(employeeDTO.postalCode());
-                        updateEmployee.setCountry(employeeDTO.country());
-                        updateEmployee.setHireDate(employeeDTO.hireDate());
-                        updateEmployee.setEmploymentStatus(employeeDTO.employmentStatus());
-                        updateEmployee.setJobTitle(employeeDTO.jobTitle());
-                        updateEmployee.setManagerId(employeeDTO.managerId());
-                        updateEmployee.setUpdatedAt(LocalDateTime.now());
+        employeeRepository.save(employee);
 
-                        Employee successUpdateEmployee = employeeRepository.save(updateEmployee);
-                        Long successEmployeeId = successUpdateEmployee.getEmployeeId();
+        Long successEmployeeId = employee.getEmployeeId();
 
-                        List<EmployeeBankDetail> existingBankDetails = employeeBankDetailRepository.getAllByEmployeeId(successEmployeeId);
-                        if (!existingBankDetails.isEmpty()) {
-                            employeeBankDetailRepository.deleteAll(existingBankDetails);
-                        }
+        List<EmployeeBankDetail> existingBankDetails = employeeBankDetailRepository
+                .getAllByEmployeeId(successEmployeeId);
+        if (!existingBankDetails.isEmpty()) {
+            employeeBankDetailRepository.deleteAll(existingBankDetails);
+        }
 
-                        if (employeeDTO.bankDetails() != null && !employeeDTO.bankDetails().isEmpty()) {
-                            List<EmployeeBankDetail> newBankDetails = employeeDTO.bankDetails().stream()
-                                    .map(employeeBankDetailDTO -> new EmployeeBankDetail(
-                                            snowFlakeIdGenerator.nextId(),
-                                            successEmployeeId,
-                                            employeeBankDetailDTO.bankName(),
-                                            employeeBankDetailDTO.accountNumber(),
-                                            employeeBankDetailDTO.bicCode(),
-                                            employeeBankDetailDTO.accountType()
-                                    )).toList();
+        if (employeeDTO.bankDetails() != null && !employeeDTO.bankDetails().isEmpty()) {
+            List<EmployeeBankDetail> newBankDetails = employeeDTO.bankDetails().stream()
+                    .map(employeeBankDetailDTO -> {
+                        EmployeeBankDetail bankDetail = new EmployeeBankDetail();
+                        bankDetail.setBankDetailId(snowFlakeIdGenerator.nextId());
+                        bankDetail.setEmployeeId(successEmployeeId);
+                        bankDetail.setBankName(employeeBankDetailDTO.bankName());
+                        bankDetail.setEncryptedAccountNumber(employeeBankDetailDTO.accountNumber());
+                        bankDetail.setBicCode(employeeBankDetailDTO.bicCode());
+                        bankDetail.setAccountType(employeeBankDetailDTO.accountType());
 
-                            employeeBankDetailRepository.saveAll(newBankDetails);
-                        }
+                        return bankDetail;
+                    })
+                    .toList();
 
-                        List<EmployeeEmergencyContact> existingEmergencyContacts = employeeEmergencyContactRepository.getAllByEmployeeId(successEmployeeId);
-                        if (!existingEmergencyContacts.isEmpty()) {
-                            employeeEmergencyContactRepository.deleteAll(existingEmergencyContacts);
-                        }
+            employeeBankDetailRepository.saveAll(newBankDetails);
+        }
 
-                        if ((employeeDTO.emergencyContacts() != null) && (!employeeDTO.emergencyContacts().isEmpty())) {
-                            List<EmployeeEmergencyContact> newEmergencyContacts = employeeDTO.emergencyContacts().stream()
-                                    .map(employeeEmergencyContactDTO -> new EmployeeEmergencyContact(
-                                            snowFlakeIdGenerator.nextId(),
-                                            successEmployeeId,
-                                            employeeEmergencyContactDTO.contactPersonName(),
-                                            employeeEmergencyContactDTO.relationship(),
-                                            employeeEmergencyContactDTO.phoneNumber(),
-                                            employeeEmergencyContactDTO.email()
-                                    )).toList();
+        List<EmployeeEmergencyContact> existingEmergencyContacts = employeeEmergencyContactRepository
+                .getAllByEmployeeId(successEmployeeId);
+        if (!existingEmergencyContacts.isEmpty()) {
+            employeeEmergencyContactRepository.deleteAll(existingEmergencyContacts);
+        }
 
-                            employeeEmergencyContactRepository.saveAll(newEmergencyContacts);
-                        }
+        if ((employeeDTO.emergencyContacts() != null) && (!employeeDTO.emergencyContacts().isEmpty())) {
+            List<EmployeeEmergencyContact> newEmergencyContacts = employeeDTO.emergencyContacts()
+                    .stream()
+                    .map(employeeEmergencyContactDTO -> {
+                        EmployeeEmergencyContact emergencyContact = new EmployeeEmergencyContact();
+                        emergencyContact.setContactId(snowFlakeIdGenerator.nextId());
+                        emergencyContact.setEmployeeId(successEmployeeId);
+                        emergencyContact.setContactName(employeeEmergencyContactDTO.contactPersonName());
+                        emergencyContact.setRelationship(employeeEmergencyContactDTO.relationship());
+                        emergencyContact.setPhoneNumber(employeeEmergencyContactDTO.phoneNumber());
+                        emergencyContact.setEmail(employeeEmergencyContactDTO.email());
 
-                        return 1;
-                    }
-                }
-            } catch (Exception e) {
-                log.error("{} {} exception occurred for transaction. Message={}", CLASS_NAME, functionName, e.getMessage());
+                        return emergencyContact;
+                    })
+                    .toList();
 
-                transactionStatus.setRollbackOnly();
-                return -1;
-            }
-        });
-
-        int finalStatus = Optional.ofNullable(status).orElse(0);
-
-        log.info("{} {} end. employeeId={}, status={}", CLASS_NAME, functionName, employeeId, finalStatus);
-        return finalStatus;
+            employeeEmergencyContactRepository.saveAll(newEmergencyContacts);
+        }
     }
 
     @Override
-    public int deleteEmployeeInfoById(long employeeId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        log.info("{} {} start. employeeId={}", CLASS_NAME, functionName, employeeId);
+    public void deleteEmployeeInfoById(long employeeId) {
+        employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Employee info with employeeId=" + employeeId + " not found."));
 
-        Integer status = transactionTemplate.execute(transactionStatus -> {
+        if (departmentCommonService.isDepartmentEmployeeExist(employeeId)) {
 
-            try {
-                Optional<Employee> employee = employeeRepository.findById(employeeId);
+            throw new BadRequestException(
+                    "Employee info with employeeId=" + employeeId + " is in used by department, not allow to delete.");
+        }
 
-                if (employee.isPresent()) {
-                    boolean isInUsedByDepartment = departmentCommonService.isDepartmentEmployeeExist(employeeId);
+        // TODO: need 2 more checking on promotion, resignation, and also more, either
+        // inused, not allow to delete
+        employeeRepository.deleteById(employeeId);
 
-                    // TODO: need 2 more checking on promotion, resignation, and also more, either inused, not allow to delete
-                    if(isInUsedByDepartment) {
-                        log.info("{} {} for employeeId={} is in used, not allow to delete.", new Object[]{CLASS_NAME, functionName, employeeId});
-                        return -2;
-                    } else {
-                        employeeRepository.delete(employee.get());
+        List<EmployeeBankDetail> bankDetails = employeeBankDetailRepository
+                .getAllByEmployeeId(employeeId);
+        if (!bankDetails.isEmpty()) {
+            employeeBankDetailRepository.deleteAll(bankDetails);
+        }
 
-                        List<EmployeeBankDetail> bankDetails = employeeBankDetailRepository.getAllByEmployeeId(employeeId);
-                        if (!bankDetails.isEmpty()) {
-                            employeeBankDetailRepository.deleteAll(bankDetails);
-                        }
-
-                        List<EmployeeEmergencyContact> emergencyContacts = employeeEmergencyContactRepository.getAllByEmployeeId(employeeId);
-                        if (!emergencyContacts.isEmpty()) {
-                            employeeEmergencyContactRepository.deleteAll(emergencyContacts);
-                        }
-
-                        return 1;
-                    }
-                } else {
-                    log.info("{} {} for employeeId={} not found.", CLASS_NAME, functionName, employeeId);
-
-                    transactionStatus.setRollbackOnly();
-                    return -1;
-                }
-            } catch (Exception e) {
-                log.error("{} {} exception occurred for transaction. Message={}", CLASS_NAME, functionName, e.getMessage());
-
-                transactionStatus.setRollbackOnly();
-                return -3;
-            }
-        });
-
-        int finalStatus = Optional.ofNullable(status).orElse(0);
-        log.info("{} {} end. employeeId={}, Status={}", CLASS_NAME, functionName, employeeId, finalStatus);
-        return finalStatus;
+        List<EmployeeEmergencyContact> emergencyContacts = employeeEmergencyContactRepository
+                .getAllByEmployeeId(employeeId);
+        if (!emergencyContacts.isEmpty()) {
+            employeeEmergencyContactRepository.deleteAll(emergencyContacts);
+        }
     }
 }

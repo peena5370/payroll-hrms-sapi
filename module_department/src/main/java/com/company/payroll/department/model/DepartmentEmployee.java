@@ -4,42 +4,40 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "department_employee")
 public class DepartmentEmployee {
     @Id
     @Column(name = "department_eid")
-    private long departmentEid;
+    private Long departmentEid;
 
     @Column(name = "department_id", nullable = false)
-    private long departmentId;
+    private Long departmentId;
 
     @Column(name = "department_fuid", nullable = false)
-    private long departmentFUId;
+    private Long departmentFUId;
 
     @Column(name = "employee_id", nullable = false)
-    private long employeeId;
+    private Long employeeId;
 
     @Column(name = "is_primary")
-    private boolean isPrimary;
+    private Boolean primary;
 
     @Column(name = "is_manager")
-    private boolean isManager;
+    private Boolean manager;
 
     @Column(name = "joined_at", nullable = false)
-    private LocalDateTime joinedAt;
+    private LocalDate joinedAt;
 
     @Column(name = "leaved_at")
-    private LocalDateTime leavedAt;
+    private LocalDate leavedAt;
 }

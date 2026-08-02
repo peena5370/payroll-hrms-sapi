@@ -4,17 +4,16 @@ import com.company.payroll.employee.dto.EmployeeDTO;
 import com.company.payroll.employee.dto.EmployeeInfoDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface EmployeeService {
 
-    int createEmployeeInfo(EmployeeDTO employeeDTO);
+    void createEmployeeInfo(EmployeeDTO employeeDTO);
 
     List<EmployeeInfoDTO> getAllEmployeesByOffsetAndLimit(int offset, int limit);
 
-    Optional<EmployeeInfoDTO> getEmployeeInfoById(long employeeId);
+    EmployeeInfoDTO getEmployeeInfoById(long employeeId);
 
-    int updateEmployeeInfoById(long employeeId, EmployeeDTO employeeDTO);
+    void updateEmployeeInfoById(long employeeId, EmployeeDTO employeeDTO);
 
-    int deleteEmployeeInfoById(long employeeId);
+    void deleteEmployeeInfoById(long employeeId);
 }

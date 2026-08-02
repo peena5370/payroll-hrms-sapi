@@ -4,25 +4,23 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "department_facility_unit")
 public class DepartmentFacilityUnit {
     @Id
     @Column(name = "department_fuid")
-    private long departmentFUId;
+    private Long departmentFUId;
 
     @Column(name = "department_id", nullable = false)
-    private long departmentId;
+    private Long departmentId;
 
     @Column(name = "facility_id", nullable = false)
-    private long facilityId;
+    private Long facilityId;
 }

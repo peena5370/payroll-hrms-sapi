@@ -6,8 +6,8 @@ public record DepartmentEmployeeDTO(
         Long departmentId,
         Long departmentFUId,
         Long employeeId,
-        boolean isPrimary,
-        boolean isManager,
+        Boolean isPrimary,
+        Boolean isManager,
         LocalDate joinedAt,
         LocalDate leavedAt
 ) {

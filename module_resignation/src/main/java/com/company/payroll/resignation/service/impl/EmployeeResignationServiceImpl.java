@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,27 +33,26 @@ public class EmployeeResignationServiceImpl implements EmployeeResignationServic
 
     @Override
     public int createResignationInfo(EmployeeResignationDTO employeeResignationDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "createResignationInfo";
         log.info("{} {} start.", CLASS_NAME, functionName);
 
         int status = 0;
         try {
-            EmployeeResignation resignation = new EmployeeResignation(
-                    snowFlakeIdGenerator.nextId(),
-                    employeeResignationDTO.employeeId(),
-                    employeeResignationDTO.resignDate(),
-                    employeeResignationDTO.lastServiceDate(),
-                    employeeResignationDTO.reason(),
-                    employeeResignationDTO.noticePeriod(),
-                    employeeResignationDTO.isExitInterviewConducted(),
-                    employeeResignationDTO.exitInterviewNote(),
-                    employeeResignationDTO.status(),
-                    employeeResignationDTO.approverId(),
-                    LocalDateTime.now(),
-                    null
-            );
+            EmployeeResignation resignation = new EmployeeResignation();
+            resignation.setResignationId(snowFlakeIdGenerator.nextId());
+            resignation.setEmployeeId(employeeResignationDTO.employeeId());
+            resignation.setResignationDate(employeeResignationDTO.resignDate());
+            resignation.setLastWorkingDay(employeeResignationDTO.lastServiceDate());
+            resignation.setResignationReason(employeeResignationDTO.reason());
+            resignation.setNoticePeriodDays(employeeResignationDTO.noticePeriod());
+            resignation.setExitInterviewConducted(employeeResignationDTO.isExitInterviewConducted());
+            resignation.setExitInterviewNote(employeeResignationDTO.exitInterviewNote());
+            resignation.setStatus(employeeResignationDTO.status());
+            resignation.setApprovedById(employeeResignationDTO.approverId());
+            resignation.setCreatedAt(Instant.now());
+            resignation.setUpdatedAt(null);
 
-            employeeResignationRepository.saveAndFlush(resignation);
+            employeeResignationRepository.save(resignation);
 
             log.info("{} {} create success.", CLASS_NAME, functionName);
             status = 1;
@@ -67,7 +67,7 @@ public class EmployeeResignationServiceImpl implements EmployeeResignationServic
 
     @Override
     public List<EmployeeResignationDetailDTO> getAllResignationInfoByOffsetAndLimitOrEmployeeId(Long employeeId, int offset, int limit) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "getAllResignationInfoByOffsetAndLimitOrEmployeeId";
         log.info("{} {} start. employeeId={}, offset={}, limit={}", CLASS_NAME, functionName, employeeId, offset, limit);
 
         List<EmployeeResignationDetailDTO> employeeResignationDetailDTOList = new ArrayList<>();
@@ -91,7 +91,7 @@ public class EmployeeResignationServiceImpl implements EmployeeResignationServic
                         resignation.getLastWorkingDay(),
                         resignation.getResignationReason(),
                         resignation.getNoticePeriodDays(),
-                        resignation.isExitInterviewConducted(),
+                        resignation.getExitInterviewConducted(),
                         resignation.getExitInterviewNote(),
                         resignation.getStatus(),
                         resignation.getApprovedById());
@@ -112,7 +112,7 @@ public class EmployeeResignationServiceImpl implements EmployeeResignationServic
 
     @Override
     public Optional<EmployeeResignationDetailDTO> getResignationInfoById(long resignationId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "getResignationInfoById";
         log.info("{} {} start. resignationId={}", CLASS_NAME, functionName, resignationId);
 
         Optional<EmployeeResignation> resignation = employeeResignationRepository.findById(resignationId);
@@ -126,7 +126,7 @@ public class EmployeeResignationServiceImpl implements EmployeeResignationServic
                     result.getLastWorkingDay(),
                     result.getResignationReason(),
                     result.getNoticePeriodDays(),
-                    result.isExitInterviewConducted(),
+                    result.getExitInterviewConducted(),
                     result.getExitInterviewNote(),
                     result.getStatus(),
                     result.getApprovedById());
@@ -147,7 +147,7 @@ public class EmployeeResignationServiceImpl implements EmployeeResignationServic
 
     @Override
     public int updateResignationInfoById(long resignationId, EmployeeResignationDTO employeeResignationDTO) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "updateResignationInfoById";
         log.info("{} {} start. resignationId={}", CLASS_NAME, functionName, resignationId);
 
         int status = 0;
@@ -169,7 +169,7 @@ public class EmployeeResignationServiceImpl implements EmployeeResignationServic
                 updateResignation.setExitInterviewNote(employeeResignationDTO.exitInterviewNote());
                 updateResignation.setStatus(employeeResignationDTO.status());
                 updateResignation.setApprovedById(employeeResignationDTO.approverId());
-                updateResignation.setUpdatedAt(LocalDateTime.now());
+                updateResignation.setUpdatedAt(Instant.now());
 
                 employeeResignationRepository.saveAndFlush(updateResignation);
 
@@ -187,7 +187,7 @@ public class EmployeeResignationServiceImpl implements EmployeeResignationServic
 
     @Override
     public int deleteResignationInfoById(long resignationId) {
-        final String functionName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        final String functionName = "deleteResignationInfoById";
         log.info("{} {} start. resignationId={}", CLASS_NAME, functionName, resignationId);
 
         int status = 0;

@@ -3,7 +3,6 @@ package com.company.payroll.compensation.model;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import com.company.payroll.compensation.constant.CompensationPaymentFrequency;
 

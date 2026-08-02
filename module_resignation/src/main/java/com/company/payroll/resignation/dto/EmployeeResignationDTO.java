@@ -7,7 +7,7 @@ public record EmployeeResignationDTO(
         LocalDate resignDate,
         LocalDate lastServiceDate,
         String reason,
-        int noticePeriod,
+        Integer noticePeriod,
         boolean isExitInterviewConducted,
         String exitInterviewNote,
         String status,

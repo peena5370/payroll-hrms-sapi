@@ -1,24 +1,22 @@
 package com.company.payroll.employee.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "employee_emergency_contact")
 public class EmployeeEmergencyContact {
     @Id
     @Column(name = "contact_id")
-    private long contactId;
+    private Long contactId;
 
     @Column(name = "employee_id", nullable = false)
-    private long employeeId;
+    private Long employeeId;
 
     @Column(name = "contact_name", nullable = false)
     private String contactName;

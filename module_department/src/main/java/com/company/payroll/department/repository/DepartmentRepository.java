@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
+    boolean existsByCostCenterCode(String costCenterCode);
+
     @Query("SELECT d.departmentId FROM Department d WHERE d.costCenterCode = :costCenterCode")
     Optional<Long> findIdByDepartmentCostCenterCode(@Param("costCenterCode") String costCenterCode);
 

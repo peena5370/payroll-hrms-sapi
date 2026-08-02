@@ -1,10 +1,10 @@
 package com.company.payroll.promotion.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record EmployeePromotionDetailDTO(
         Long promotionId,
-        LocalDateTime createdAt,
+        Instant createdAt,
         EmployeePromotionDTO detail
 ) {
 }
