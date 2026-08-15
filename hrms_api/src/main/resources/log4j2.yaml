@@ -1,8 +1,8 @@
 Configuration:
-  status: info # Set this to 'trace', 'debug', 'info', 'warn', 'error', 'fatal' to control internal Log4j2 messages
+  status: trace # Set this to 'trace', 'debug', 'info', 'warn', 'error', 'fatal' to control internal Log4j2 messages
 
   Properties:
-    Property:
+    property:
       - name: logPath
         value: "${env:LOG_PATH:-${sys:user.dir}}/logs" # Define a property for your log directory
       - name: logFileName
