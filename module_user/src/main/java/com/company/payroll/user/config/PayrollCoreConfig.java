@@ -21,8 +21,10 @@ public class PayrollCoreConfig {
     }
 
     @Bean
-    public WebClient payrollCoreClientBuilder(WebClient.Builder builder) {
+    public WebClient payrollCoreClientBuilder() {
         log.info("user config initialized: {}", properties.getEndpoint());
-        return builder.baseUrl(properties.getEndpoint()).build();
+        return WebClient.builder()
+                .baseUrl(properties.getEndpoint())
+                .build();
     }
 }

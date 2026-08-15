@@ -45,10 +45,9 @@ public class EmployeeCommonServiceImpl implements EmployeeCommonService {
             // #2 if the loan amount is above 5k and title is manager or director, then is
             // eligible for the loan
             if ((loanAmount.compareTo(loanThresholdAmount) < 0)
-                    && (normalizedTitle.contains("ENGINEER") || normalizedTitle.contains("EXECUTIVE"))) {
-                isEligible = true;
-            } else if ((loanAmount.compareTo(loanThresholdAmount) > 0)
-                    && (normalizedTitle.contains("MANAGER") || normalizedTitle.contains("DIRECTOR"))) {
+                    && (normalizedTitle.contains("ENGINEER") || normalizedTitle.contains("EXECUTIVE"))
+                || ((loanAmount.compareTo(loanThresholdAmount) > 0)
+                    && (normalizedTitle.contains("MANAGER") || normalizedTitle.contains("DIRECTOR")))) {
                 isEligible = true;
             }
         }

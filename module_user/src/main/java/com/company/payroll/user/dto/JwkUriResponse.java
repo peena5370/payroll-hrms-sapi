@@ -1,4 +1,6 @@
 package com.company.payroll.user.dto;
 
-public record JwkUriResponse(int statusCode, String message, JwkUriData data) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record JwkUriResponse(@JsonProperty("status_code")Integer statusCode, String message, JwkUriData data) {
 }

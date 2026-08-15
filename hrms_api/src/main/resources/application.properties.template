@@ -3,7 +3,11 @@ spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
 spring.datasource.url=jdbc:mariadb://localhost:3306/payroll_schema?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Kuala_Lumpur
 spring.datasource.username=user
 spring.datasource.password=password
+
+# Database connection pool size need to be update in order to support virtual thread in future, check for the database max support connection for fine tune it
+# Depends on the db connection pool available instance, check the value first before scaling it to prevent database crash
 spring.datasource.hikari.maximum-pool-size=10
+# Make it fail fast when enable virtual thread, cut to 10s/15s if virtual thread enabled
 spring.datasource.hikari.connection-timeout=30000
 spring.datasource.hikari.idle-timeout=600000
 spring.datasource.hikari.max-lifetime=1800000
@@ -17,7 +21,11 @@ spring.jpa.open-in-view=false
 spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true
 spring.jpa.properties.hibernate.hbm2ddl.auto=none
 spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.jdbc.time_zone=UTC # may need to change it to suit our environment, but for now, we will use UTC as the default timezone
+# may need to change it to suit our environment, but for now, we will use UTC as the default timezone
+spring.jpa.properties.hibernate.jdbc.time_zone=UTC
+
+# Virtual thread configuration
+spring.threads.virtual.enabled=true
 
 # Mybatis mapper configuration
 mybatis.mapper-locations=classpath:mapper/*Mapper.xml
@@ -35,12 +43,13 @@ pagehelper.support-methods-arguments=true
 
 # Spring boot context path
 server.port=6000
-server.servlet.context-path=/payroll-hrms
-server.tomcat.max-threads=200
+server.servlet.context-path=/payroll-hrms-sapi
+# server.tomcat.threads.max=200
+# server.tomcat.threads.min-spare=10
 server.tomcat.connection-timeout=30000
 server.shutdown=graceful
 
-# Jwt token properties
+# Jwt token properties with base64 string over 32 character long
 jwt.config.key=ABCDEF
 # time to live in second
 jwt.config.ttl=604800
@@ -59,3 +68,5 @@ spring.servlet.multipart.max-request-size=204MB
 # Open API configuration
 springdoc.packages-to-scan=com.company.payroll
 springdoc.paths-to-match=/**
+
+logging.config=classpath:log4j2.yaml

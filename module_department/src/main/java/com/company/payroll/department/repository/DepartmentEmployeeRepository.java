@@ -18,13 +18,13 @@ public interface DepartmentEmployeeRepository extends JpaRepository<DepartmentEm
         @Query("SELECT de FROM DepartmentEmployee de " +
                         "WHERE de.departmentId IN :departmentIds " +
                         "AND de.departmentFUId IN :departmentFUIds " +
-                        "AND de.isPrimary = :isPrimary " +
-                        "AND de.isManager = :isManager")
+                        "AND de.primary = :primary " +
+                        "AND de.manager = :manager")
         List<DepartmentEmployee> getAllByDepartmentIdsByDepartmentFacilityUnitIdsAndIsPrimaryAndIsManager(
                         @Param("departmentIds") List<Long> departmentIds,
                         @Param("departmentFUIds") List<Long> departmentFUIds,
-                        @Param("isPrimary") boolean isPrimary,
-                        @Param("isManager") boolean isManager);
+                        @Param("primary") boolean primary,
+                        @Param("manager") boolean manager);
 
         @Query("SELECT de FROM DepartmentEmployee de WHERE de.employeeId = :employeeId")
         List<DepartmentEmployee> getAllByDepartmentByEmployeeId(@Param("employeeId") Long employeeId);
