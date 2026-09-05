@@ -30,9 +30,9 @@
         <module>module_common</module>
         <module>module_promotion</module>
         <module>module_resignation</module>
-        <module>module_compensation</module>
-        <module>module_allowance</module>
-        <module>module_loan</module>
+        <module>module_compensation</module> <!-- TODO: Move to payroll-accounting-management service -->
+        <module>module_allowance</module> <!-- TODO: Move to payroll-accounting-management service -->
+        <module>module_loan</module> <!-- TODO: Move to payroll-accounting-management service -->
         <module>module_logging</module>
         <module>module_exception</module>
     </modules>

@@ -60,3 +60,15 @@ A FYP project during degree study
 # Project architecture the Human Resource Payroll Management System
 <img src="./doc/resources/payroll_architecture.jpg?v=2" alt="payroll-architecture" style="width:100%; height: 650px;"/>
 *** Greyed icon to be implement
+
+## License
+
+This project is source-available under the **PolyForm Noncommercial License 1.0.0**.
+
+* **Allowed:** Free for educational, research, personal, and non-commercial open-source use.
+* **Prohibited:** Commercial use, resale, deployment in a revenue-generating environment, or integration into proprietary business workflows without an explicit commercial license.
+
+See the full terms in the [LICENSE](LICENSE) file.
+
+### Commercial Licensing
+If you wish to use this software for commercial purposes, business operations, or revenue-generating activities, please contact `leesx92@gmail.com` to request a commercial license.
