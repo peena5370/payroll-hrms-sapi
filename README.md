@@ -63,12 +63,11 @@ A FYP project during degree study
 
 ## License
 
-This project is source-available under the **PolyForm Noncommercial License 1.0.0**.
+This project is source-available strictly under the **PolyForm Noncommercial License 1.0.0**.
 
-* **Allowed:** Free for educational, research, personal, and non-commercial open-source use.
-* **Prohibited:** Commercial use, resale, deployment in a revenue-generating environment, or integration into proprietary business workflows without an explicit commercial license.
+* **Allowed:** Educational, research, personal learning, and non-commercial open-source use.
+* **Prohibited:** Any commercial use, resale, integration into business workflows, or deployment in revenue-generating environments. 
+
+**Note on Commercial Licensing:** Commercial licenses are strictly **not offered or granted** for this project. Commercial use of any kind is explicitly prohibited.
 
 See the full terms in the [LICENSE](LICENSE) file.
-
-### Commercial Licensing
-If you wish to use this software for commercial purposes, business operations, or revenue-generating activities, please contact `leesx92@gmail.com` to request a commercial license.
